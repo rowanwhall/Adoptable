@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">Adoptable</string>
+
+    <string name="location_permission_message">Adoptable requires your location in order to find nearby pets and shelters.</string>
+    <string name="location_permission_button">Grant Permission</string>
+    <string name="location_failure_message">We found your location, but were unable to retrieve its zip code. Please try again or enter your zip code manually.</string>
+    <string name="location_failure_zipcode_entry_hint">Zip Code</string>
+    <string name="location_failure_button">Try Again</string>
+    <string name="location_failure_zipcode_entry_button">Use Zip Code</string>
+    <string name="location_toast_message">Showing pets for zipcode %1$s</string>
+
+    <string name="main_bottom_nav_animals">Animals</string>
+    <string name="main_bottom_nav_shelters">Shelters</string>
+    <string name="main_bottom_nav_search">Search</string>
+    <string name="main_bottom_nav_favorites">Favorites</string>
+
+    <string name="pet_master_nearby_container_title">Nearby Animals</string>
+    <string name="pet_master_header">%1$s - %2$s</string>
+    <string name="pet_master_detail">%1$s - %2$s - %3$s - %4$s, %5$s</string>
+    <string name="pet_master_empty">No pets found.</string>
+    <string name="pet_master_tab_dogs">Dogs</string>
+    <string name="pet_master_tab_cats">Cats</string>
+    <string name="pet_master_tab_birds">Birds</string>
+    <string name="pet_master_tab_reptiles">Reptiles</string>
+    <string name="pet_master_tab_small_furry">Small Furry</string>
+    <string name="pet_master_tab_horses">Horses</string>
+    <string name="pet_master_tab_pigs">Pigs</string>
+    <string name="pet_master_tab_barnyard">Barnyard</string>
+    <string name="pet_master_tab_adoptable">Adoptable</string>
+    <string name="pet_master_tab_hold">Hold</string>
+    <string name="pet_master_tab_pending">Pending</string>
+    <string name="pet_master_tab_adopted">Adopted</string>
+    <string name="pet_master_search_title">Search Results</string>
+    <string name="pet_master_favorites_title">Favorite Pets</string>
+    <string name="pet_image_content_description">The image for an animal</string>
+    <string name="pet_master_detail_fade_transition">MasterDetailFadeTransition</string>
+    <string name="pet_master_detail_text_transition">MasterDetailTextTransition</string>
+
+    <string name="pet_detail_photo_transition">PetDetailPhotoTransition</string>
+    <string name="pet_detail_photo_title">%1$s of %2$s</string>
+    <string name="pet_detail_photo_menu">Photos</string>
+    <string name="pet_detail_photo_share_menu">Share with…</string>
+    <string name="pet_detail_photo_download_menu">Download photo</string>
+    <string name="pet_detail_photo_download_successful">Photo download succeeded</string>
+    <string name="pet_detail_photo_download_failure">Photo download failed</string>
+    <string name="pet_detail_photo_download_duplicate">This photo has already been downloaded</string>
+
+    <string name="shelter_title">Nearby Shelters</string>
+    <string name="shelter_empty">No shelters found.</string>
+    <string name="shelter_subtitle">%1$s, %2$s %3$s</string>
+    <string name="shelter_phone">Phone: %1$s</string>
+    <string name="shelter_fax">Fax: %1$s</string>
+    <string name="shelter_email">Email: %1$s</string>
+    <string name="shelter_button_pets">Pets</string>
+    <string name="shelter_button_directions">Directions</string>
+
+    <string name="search_title">Search Pets</string>
+    <string name="search_location_hint">Zip Code</string>
+    <string-array name="search_animal_options">
+        <item name="search_animal_option_none">Any Animal</item>
+        <item name="search_animal_option_dogs">Dogs</item>
+        <item name="search_animal_option_cats">Cats</item>
+        <item name="search_animal_option_birds">Birds</item>
+        <item name="search_animal_option_reptiles">Reptiles</item>
+        <item name="search_animal_option_small_furry">Small Furry</item>
+        <item name="search_animal_option_horses">Horses</item>
+        <item name="search_animal_option_pigs">Pigs</item>
+        <item name="search_animal_option_barnyard">Barnyard</item>
+    </string-array>
+    <string-array name="search_size_options">
+        <item name="search_size_option_none">Any Size</item>
+        <item name="search_size_option_small">Small</item>
+        <item name="search_size_option_medium">Medium</item>
+        <item name="search_size_option_large">Large</item>
+        <item name="search_size_option_xl">Extra Large</item>
+    </string-array>
+    <string-array name="search_age_options">
+        <item name="search_age_none">Any Age</item>
+        <item name="search_age_baby">Baby</item>
+        <item name="search_age_young">Young</item>
+        <item name="search_age_adult">Adult</item>
+        <item name="search_age_senior">Senior</item>
+    </string-array>
+    <string name="search_radio_option_none">Either</string>
+    <string name="search_radio_option_male">Male</string>
+    <string name="search_radio_option_female">Female</string>
+    <string name="search_breed_defaut">Any Breed</string>
+    <string name="search_breed_progress_title">Finding breeds for selected animal</string>
+    <string name="search_breed_progress_detail">@string/progress_detail_generic</string>
+    <string name="search_breed_empty_animal_error">Please select an animal to search breeds</string>
+    <string name="search_breed_dialog_title">Choose a breed</string>
+    <string name="search_breed_error">Something went wrong trying to find breeds for this animal</string>
+    <string name="search_disclaimer">All pet and shelter data supplied by Petfinder. Adoptable has no control over search results.</string>
+
+    <string name="progress_detail_generic">This will only take a moment.</string>
+
+</resources>
