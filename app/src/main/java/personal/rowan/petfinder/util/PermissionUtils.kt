@@ -9,8 +9,6 @@ import android.support.v4.content.ContextCompat
  */
 object PermissionUtils {
 
-    // 3 lbs, 12.5 ounces
-
     val PERMISSION_CODE_LOCATION = 1
     val PERMISSION_CODE_STORAGE = 2
 
