@@ -11,10 +11,10 @@ import javax.inject.Inject
  */
 
 @PetMasterScope
-class PetMasterPresenterFactory @Inject constructor(private val mPetfinderService: PetfinderService, private val mRealmManager: RealmFavoritesManager) : PresenterFactory<PetMasterPresenter> {
+class PetMasterPresenterFactory @Inject constructor(private val mPetMasterRepository: PetMasterRepository) : PresenterFactory<PetMasterPresenter> {
 
     override fun create(): PetMasterPresenter {
-        return PetMasterPresenter(mPetfinderService, mRealmManager)
+        return PetMasterPresenter(mPetMasterRepository)
     }
 
 }

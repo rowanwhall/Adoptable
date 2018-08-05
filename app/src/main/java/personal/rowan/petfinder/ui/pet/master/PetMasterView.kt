@@ -15,8 +15,6 @@ interface PetMasterView {
 
     fun showError(error: String)
 
-    fun showProgress()
-
-    fun hideProgress()
+    fun showProgress(progress: Boolean)
 
 }

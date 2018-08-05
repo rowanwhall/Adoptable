@@ -3,14 +3,9 @@ package personal.rowan.petfinder.ui.pet.master
 import android.content.Context
 import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent
 import personal.rowan.petfinder.application.Resource
-import personal.rowan.petfinder.ui.pet.master.favorite.RealmFavoritesManager
-import personal.rowan.petfinder.model.pet.PetResult
-import personal.rowan.petfinder.network.PetfinderService
 import personal.rowan.petfinder.ui.base.presenter.BasePresenter
 import personal.rowan.petfinder.ui.pet.master.dagger.PetMasterScope
 import personal.rowan.petfinder.ui.pet.master.recycler.PetMasterViewHolder
-import personal.rowan.petfinder.ui.pet.master.search.PetMasterSearchArguments
-import personal.rowan.petfinder.ui.pet.master.shelter.PetMasterShelterArguments
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -21,7 +16,7 @@ import rx.subscriptions.CompositeSubscription
  */
 
 @PetMasterScope
-class PetMasterPresenter(private var mPetfinderService: PetfinderService, private var mRealmManager: RealmFavoritesManager) : BasePresenter<PetMasterView>(PetMasterView::class.java) {
+class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePresenter<PetMasterView>(PetMasterView::class.java) {
 
     private val mCompositeSubscription = CompositeSubscription()
 
@@ -45,25 +40,9 @@ class PetMasterPresenter(private var mPetfinderService: PetfinderService, privat
     private fun loadData(context: Context, clear: Boolean) {
         if(petResource.progress) return
 
-        val petObservable: Observable<PetResult>
-        when (mType) {
-            PetMasterFragment.TYPE_FIND -> {
-                val searchArgs: PetMasterSearchArguments = mArguments as PetMasterSearchArguments
-                petObservable = mPetfinderService.getNearbyPets(searchArgs.location(), searchArgs.animal(), searchArgs.size(), searchArgs.age(), searchArgs.size(), searchArgs.breed(), offset())
-            }
-            PetMasterFragment.TYPE_SHELTER -> {
-                val shelterArgs: PetMasterShelterArguments = mArguments as PetMasterShelterArguments
-                petObservable = mPetfinderService.getPetsForShelter(shelterArgs.shelterId(), shelterArgs.status(), offset())
-            }
-            PetMasterFragment.TYPE_FAVORITE -> {
-                petResource = Resource.success(PetMasterViewState(mRealmManager.loadFavorites(), "0", true))
-                publish()
-                return
-            }
-            else -> throw RuntimeException("invalid pet master type")
-        }
-        mCompositeSubscription.add(petObservable
-                .map { Resource.success(PetMasterViewState.fromPetResult(if (petResource.hasData()) petResource.data() else null, it, clear, context)) }
+        mCompositeSubscription.add(
+                mRepository.getPets(mType!!, mArguments, offset(), if (petResource.hasData()) petResource.data() else null, clear, context)
+                .map { Resource.success(it) }
                 .startWith(Resource.progress(petResource))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -113,11 +92,7 @@ class PetMasterPresenter(private var mPetfinderService: PetfinderService, privat
         }
 
         val view = mView!!
-        if (petResource.progress) {
-            view.showProgress()
-        } else {
-            view.hideProgress()
-        }
+        view.showProgress(petResource.progress)
         if (petResource.hasData()) {
             view.displayPets(petResource.data().petData, mType != PetMasterFragment.TYPE_FAVORITE)
         }
@@ -130,7 +105,7 @@ class PetMasterPresenter(private var mPetfinderService: PetfinderService, privat
         if(!mCompositeSubscription.isUnsubscribed) {
             mCompositeSubscription.unsubscribe()
         }
-        mRealmManager.close()
+        mRepository.closeRealm()
     }
 
 }

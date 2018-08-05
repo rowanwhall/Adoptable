@@ -83,11 +83,7 @@ class ShelterPresenter(private var mPetfinderService: PetfinderService) : BasePr
         }
 
         val view = mView!!
-        if (shelterResource.progress) {
-            view.showProgress()
-        } else {
-            view.hideProgress()
-        }
+        view.showProgress(shelterResource.progress)
         if (shelterResource.hasData()) {
             view.displayShelters(shelterResource.data().shelterData)
         }

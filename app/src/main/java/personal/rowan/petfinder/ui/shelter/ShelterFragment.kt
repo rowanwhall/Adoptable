@@ -129,12 +129,8 @@ class ShelterFragment : BasePresenterFragment<ShelterPresenter, ShelterView>(), 
         showToastMessage(error)
     }
 
-    override fun showProgress() {
-        swipeRefresh.isRefreshing = true
-    }
-
-    override fun hideProgress() {
-        swipeRefresh.isRefreshing = false
+    override fun showProgress(progress: Boolean) {
+        swipeRefresh.isRefreshing = progress
     }
 
 }
