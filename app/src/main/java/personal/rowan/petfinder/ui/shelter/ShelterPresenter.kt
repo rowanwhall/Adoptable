@@ -3,7 +3,6 @@ package personal.rowan.petfinder.ui.shelter
 import android.content.Context
 import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent
 import personal.rowan.petfinder.application.Resource
-import personal.rowan.petfinder.network.PetfinderService
 import personal.rowan.petfinder.ui.base.presenter.BasePresenter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -13,7 +12,7 @@ import rx.subscriptions.CompositeSubscription
 /**
  * Created by Rowan Hall
  */
-class ShelterPresenter(private var mPetfinderService: PetfinderService) : BasePresenter<ShelterView>(ShelterView::class.java) {
+class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresenter<ShelterView>(ShelterView::class.java) {
 
     private val mCompositeSubscription: CompositeSubscription = CompositeSubscription()
 
@@ -34,17 +33,15 @@ class ShelterPresenter(private var mPetfinderService: PetfinderService) : BasePr
     private fun loadData(context: Context, clear: Boolean) {
         if (shelterResource.progress) return
 
-        mCompositeSubscription.add(mPetfinderService.getNearbyShelters(mLocation, offset())
-                .map { Resource.success(ShelterViewState.fromShelterResult(if (shelterResource.hasData()) shelterResource.data() else null, it, clear, context)) }
+        mCompositeSubscription.add(mRepository.getShelters(mLocation, offset(), if (shelterResource.hasData()) shelterResource.data() else null, clear, context)
+                .map { Resource.success(it) }
                 .startWith(Resource.progress(shelterResource))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
+                .subscribe({
                             shelterResource = it
                             publish()
-                        },
-                        {
+                        }, {
                             shelterResource = Resource.failure(shelterResource, it)
                             publish()
                         })
