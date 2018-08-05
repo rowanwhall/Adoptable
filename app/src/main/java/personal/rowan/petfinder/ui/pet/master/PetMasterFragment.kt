@@ -161,7 +161,7 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
     }
 
     override fun showError(error: String) {
-        Log.d("petmastererror", error)
+        Log.e("petmastererror", error)
         showToastMessage(error)
     }
 

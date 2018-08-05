@@ -92,8 +92,8 @@ class ShelterPresenter(private var mPetfinderService: PetfinderService) : BasePr
             view.displayShelters(shelterResource.data().shelterData)
         }
         if (shelterResource.hasError()) {
-            shelterResource = Resource.starting()
             view.showError(shelterResource.error().toString())
+            shelterResource = Resource.starting()
         }
     }
 

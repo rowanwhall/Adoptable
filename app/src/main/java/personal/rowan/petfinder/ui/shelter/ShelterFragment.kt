@@ -125,7 +125,7 @@ class ShelterFragment : BasePresenterFragment<ShelterPresenter, ShelterView>(), 
     }
 
     override fun showError(error: String) {
-        Log.d("sheltermastererror", error)
+        Log.e("sheltermastererror", error)
         showToastMessage(error)
     }
 
