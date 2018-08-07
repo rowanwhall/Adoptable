@@ -55,21 +55,6 @@ class LocationFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LocationComponent.injector.call(this)
-
-        mCompositeSubscription.add(mUserLocationManager.permissionObservable()
-                .subscribe ({ if(it) findZipcode() else showLocationPermissionButton() }, { showLocationFailure() }))
-
-        if(!PermissionUtils.hasPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            requestLocationPermission()
-            return
-        }
-
-        findZipcode()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mCompositeSubscription.unsubscribe()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,6 +79,13 @@ class LocationFragment : BaseFragment() {
             proceedToMainActivity(zipcodeEntry.text.toString())
             AndroidUtils.hideKeyboard(context!!, zipcodeEntry)
         }
+
+        showLocationPermissionOrFindZipcode()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mCompositeSubscription.unsubscribe()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -101,6 +93,18 @@ class LocationFragment : BaseFragment() {
             PermissionUtils.PERMISSION_CODE_LOCATION ->
                 mUserLocationManager.permissionEvent(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         }
+    }
+
+    private fun showLocationPermissionOrFindZipcode() {
+        mCompositeSubscription.add(mUserLocationManager.permissionObservable()
+                .subscribe ({ if(it) findZipcode() else showLocationPermissionButton() }, { showLocationFailure() }))
+
+        if(!PermissionUtils.hasPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            requestLocationPermission()
+            return
+        }
+
+        findZipcode()
     }
 
     private fun showLocationPermissionButton() {
@@ -119,7 +123,7 @@ class LocationFragment : BaseFragment() {
 
     private fun findZipcode() {
         mCompositeSubscription.add(mUserLocationManager.zipcodeObservable(context!!)
-                .subscribe { zipcode -> proceedToMainActivity(zipcode) })
+                        .subscribe({ proceedToMainActivity(it) }, { showLocationFailure() }))
     }
 
     private fun proceedToMainActivity(zipcode: String) {

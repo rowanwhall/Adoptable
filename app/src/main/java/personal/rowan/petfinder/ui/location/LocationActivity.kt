@@ -17,7 +17,7 @@ class LocationActivity : ContainerActivity() {
         }
     }
 
-    override fun getFragment(): BaseFragment? {
+    override fun getFragment(): BaseFragment {
         return LocationFragment.getInstance()
     }
 

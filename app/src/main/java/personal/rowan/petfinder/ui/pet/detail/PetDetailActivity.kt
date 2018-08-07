@@ -20,7 +20,7 @@ class PetDetailActivity : ContainerActivity() {
         }
     }
 
-    override fun getFragment(): BaseFragment? {
+    override fun getFragment(): BaseFragment {
         return PetDetailFragment.getInstance(intent.getParcelableExtra(ARG_PET_DETAIL_MODEL))
     }
 

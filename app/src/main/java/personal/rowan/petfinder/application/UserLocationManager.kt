@@ -8,7 +8,7 @@ import android.text.TextUtils
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import rx.subjects.PublishSubject
+import rx.subjects.BehaviorSubject
 import java.util.*
 import javax.inject.Singleton
 
@@ -29,7 +29,7 @@ class UserLocationManager private constructor() {
     }
 
     private var mSharedPrefs: SharedPreferences? = null
-    private val mPermissionSubject: PublishSubject<Boolean> = PublishSubject.create()
+    private val mPermissionSubject: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     fun permissionEvent(granted: Boolean) {
         mPermissionSubject.onNext(granted)

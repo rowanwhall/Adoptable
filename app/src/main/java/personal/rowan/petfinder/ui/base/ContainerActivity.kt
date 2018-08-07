@@ -24,6 +24,6 @@ abstract class ContainerActivity : BaseActivity() {
         }
     }
 
-    abstract protected fun getFragment(): BaseFragment?
+    abstract protected fun getFragment(): BaseFragment
 
 }

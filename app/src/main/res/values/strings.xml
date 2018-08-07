@@ -3,7 +3,7 @@
 
     <string name="location_permission_message">Adoptable requires your location in order to find nearby pets and shelters.</string>
     <string name="location_permission_button">Grant Permission</string>
-    <string name="location_failure_message">We found your location, but were unable to retrieve its zip code. Please try again or enter your zip code manually.</string>
+    <string name="location_failure_message">We were unable to retrieve your zip code. Please try again or enter your zip code manually.</string>
     <string name="location_failure_zipcode_entry_hint">Zip Code</string>
     <string name="location_failure_button">Try Again</string>
     <string name="location_failure_zipcode_entry_button">Use Zip Code</string>

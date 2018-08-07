@@ -56,7 +56,7 @@ class PetMasterViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
                 Pair.create(fadeView, fadeView.context.getString(R.string.pet_master_detail_fade_transition)),
                 Pair.create(textContainer as View, textContainer.context.getString(R.string.pet_master_detail_text_transition)))
 
-        mClickSubscription = RxView.clicks(clickContainer).subscribe { v -> clickSubject.onNext(PetMasterClickData(listViewState as PetDetailViewState, transitionViews)) }
+        mClickSubscription = RxView.clicks(clickContainer).subscribe ({ v -> clickSubject.onNext(PetMasterClickData(listViewState as PetDetailViewState, transitionViews)) }, { })
     }
 
     class PetMasterClickData(private val mViewState: PetDetailViewState, private val mTransitionViews: Array<Pair<View, String>>){
