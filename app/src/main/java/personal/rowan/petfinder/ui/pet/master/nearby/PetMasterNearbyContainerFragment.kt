@@ -9,7 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotterknife.bindView
+
 import personal.rowan.petfinder.R
 import personal.rowan.petfinder.application.UserLocationManager
 import personal.rowan.petfinder.ui.base.BaseFragment
@@ -25,12 +25,12 @@ class PetMasterNearbyContainerFragment : BaseFragment() {
     @Inject
     lateinit var mUserLocationManager: UserLocationManager
 
-    private val toolbar: Toolbar by bindView(R.id.pet_master_nearby_container_toolbar)
-    private val tabLayout: TabLayout by bindView(R.id.pet_master_nearby_container_tabs)
-    private val viewPager: ViewPager by bindView(R.id.pet_master_nearby_container_pager)
+    private lateinit var toolbar: Toolbar
+    private lateinit var tabLayout: TabLayout
+    private lateinit var viewPager: ViewPager
 
     companion object {
-        fun getInstance(): PetMasterNearbyContainerFragment {
+        fun newInstance(): PetMasterNearbyContainerFragment {
             return PetMasterNearbyContainerFragment()
         }
     }
@@ -41,6 +41,10 @@ class PetMasterNearbyContainerFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        toolbar = view.findViewById(R.id.pet_master_nearby_container_toolbar)
+        tabLayout = view.findViewById(R.id.pet_master_nearby_container_tabs)
+        viewPager = view.findViewById(R.id.pet_master_nearby_container_pager)
+
         PetMasterNearbyContainerComponent.injector.call(this)
         setToolbar(toolbar, getString(R.string.pet_master_nearby_container_title))
         setupViewPagerWithZipcode(mUserLocationManager.loadZipcode(context!!))
@@ -48,11 +52,11 @@ class PetMasterNearbyContainerFragment : BaseFragment() {
 
     private fun setupViewPagerWithZipcode(zipcode: String) {
         if (TextUtils.isEmpty(zipcode) || zipcode == UserLocationManager.ERROR) {
-            startActivity(LocationActivity.createIntent(context!!).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            startActivity(LocationActivity.newIntent(context!!).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             return
         }
         if (viewPager.adapter == null) {
-            viewPager.setAdapter(PetMasterNearbyContainerAdapter(childFragmentManager, context!!, zipcode))
+            viewPager.adapter = PetMasterNearbyContainerAdapter(childFragmentManager, context!!, zipcode)
         }
         viewPager.offscreenPageLimit = PetMasterNearbyContainerAdapter.NUM_PAGES
         tabLayout.setupWithViewPager(viewPager)

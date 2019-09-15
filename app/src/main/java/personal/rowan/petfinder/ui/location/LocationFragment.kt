@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import kotterknife.bindView
+
 import personal.rowan.petfinder.R
 import personal.rowan.petfinder.application.UserLocationManager
 import personal.rowan.petfinder.ui.base.BaseFragment
@@ -31,7 +31,7 @@ class LocationFragment : BaseFragment() {
 
     companion object {
 
-        fun getInstance(): LocationFragment {
+        fun newInstance(): LocationFragment {
             return LocationFragment()
         }
     }
@@ -39,12 +39,12 @@ class LocationFragment : BaseFragment() {
     @Inject
     lateinit var mUserLocationManager: UserLocationManager
 
-    private val locationFailureContainer: LinearLayout by bindView(R.id.location_failure_container)
-    private val locationFailureButton: Button by bindView(R.id.location_failure_button)
-    private val zipcodeEntry: EditText by bindView(R.id.zipcode_entry)
-    private val zipcodeEntryButton: Button by bindView(R.id.zipcode_entry_button)
-    private val locationPermissionContainer: LinearLayout by bindView(R.id.location_permission_container)
-    private val locationPermissionButton: Button by bindView(R.id.location_permission_button)
+    private lateinit var locationFailureContainer: LinearLayout
+    private lateinit var locationFailureButton: Button
+    private lateinit var zipcodeEntry: EditText
+    private lateinit var zipcodeEntryButton: Button
+    private lateinit var locationPermissionContainer: LinearLayout
+    private lateinit var locationPermissionButton: Button
 
     private val mCompositeSubscription = CompositeSubscription()
 
@@ -59,6 +59,13 @@ class LocationFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        locationFailureContainer = view.findViewById(R.id.location_failure_container)
+        locationFailureButton = view.findViewById(R.id.location_failure_button)
+        zipcodeEntry = view.findViewById(R.id.zipcode_entry)
+        zipcodeEntryButton = view.findViewById(R.id.zipcode_entry_button)
+        locationPermissionContainer = view.findViewById(R.id.location_permission_container)
+        locationPermissionButton = view.findViewById(R.id.location_permission_button)
+
         locationPermissionButton.setOnClickListener { requestLocationPermission() }
         locationFailureButton.setOnClickListener { findZipcode() }
         zipcodeEntry.addTextChangedListener(object: TextWatcher {

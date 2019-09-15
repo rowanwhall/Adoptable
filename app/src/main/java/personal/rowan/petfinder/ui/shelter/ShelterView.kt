@@ -11,8 +11,6 @@ interface ShelterView {
 
     fun onDirectionsButtonClicked(address: String)
 
-    fun shouldPaginate(): Boolean
-
     fun showError(error: String)
 
     fun showProgress(progress: Boolean)

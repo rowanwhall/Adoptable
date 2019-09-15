@@ -30,7 +30,7 @@ abstract class BasePresenter<V: Any>(private val mViewClazz: Class<V>) {
 
     }
 
-    // Overriden in subclasses
+    // Overridden in subclasses
     open fun onDestroyed() {
 
     }

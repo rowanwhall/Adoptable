@@ -16,7 +16,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.RadioButton
-import kotterknife.bindView
+
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
 import personal.rowan.petfinder.R
@@ -39,22 +39,22 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
 
     companion object {
 
-        private val TAG_BREED_DIALOG = "SearchBreedsDialog"
+        private const val TAG_BREED_DIALOG = "SearchBreedsDialog"
 
-        fun getInstance(): SearchFragment {
+        fun newInstance(): SearchFragment {
             return SearchFragment()
         }
     }
 
-    private val toolbar: Toolbar by bindView(R.id.search_toolbar)
-    private val locationView: TextInputEditText by bindView(R.id.search_location)
-    private val animalView: AppCompatSpinner by bindView(R.id.search_animal_spinner)
-    private val sizeView: AppCompatSpinner by bindView(R.id.search_size_spinner)
-    private val ageView: AppCompatSpinner by bindView(R.id.search_age_spinner)
-    private val maleSexView: RadioButton by bindView(R.id.search_male_radio)
-    private val femaleSexView: RadioButton by bindView(R.id.search_female_radio)
-    private val breedButton: Button by bindView(R.id.search_breed_button)
-    private val searchFab: FloatingActionButton by bindView(R.id.search_fab)
+    private lateinit var toolbar: Toolbar
+    private lateinit var locationView: TextInputEditText
+    private lateinit var animalView: AppCompatSpinner
+    private lateinit var sizeView: AppCompatSpinner
+    private lateinit var ageView: AppCompatSpinner
+    private lateinit var maleSexView: RadioButton
+    private lateinit var femaleSexView: RadioButton
+    private lateinit var breedButton: Button
+    private lateinit var searchFab: FloatingActionButton
 
     private lateinit var mPresenter: SearchPresenter
     private var mDialogSubscription: Subscription? = null
@@ -69,6 +69,15 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        toolbar = view.findViewById(R.id.search_toolbar)
+        locationView = view.findViewById(R.id.search_location)
+        animalView = view.findViewById(R.id.search_animal_spinner)
+        sizeView = view.findViewById(R.id.search_size_spinner)
+        ageView = view.findViewById(R.id.search_age_spinner)
+        maleSexView = view.findViewById(R.id.search_male_radio)
+        femaleSexView = view.findViewById(R.id.search_female_radio)
+        breedButton = view.findViewById(R.id.search_breed_button)
+        searchFab = view.findViewById(R.id.search_fab)
 
         setToolbar(toolbar, getString(R.string.search_title))
         animalView.adapter = generateSpinnerAdapter(R.array.search_animal_options)
@@ -84,7 +93,7 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
         sizeView.adapter = generateSpinnerAdapter(R.array.search_size_options)
         ageView.adapter = generateSpinnerAdapter(R.array.search_age_options)
         RxView.clicks(breedButton).subscribe { mPresenter.loadBreeds(PetUtils.searchAnimalByIndex(animalView.selectedItemPosition)) }
-        RxTextView.textChanges(locationView).subscribe { s -> enableFab(!s.isEmpty())}
+        RxTextView.textChanges(locationView).subscribe { s -> enableFab(s.isNotEmpty())}
         enableFab(false)
 
         RxView.clicks(searchFab).subscribe { performSearch() }
@@ -108,7 +117,7 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
     }
 
     override fun displayBreeds(breeds: Breeds) {
-        val breedsDialog = SearchBreedsDialogFragment.getInstance(breeds)
+        val breedsDialog = SearchBreedsDialogFragment.newInstance(breeds)
         breedsDialog.show(childFragmentManager, TAG_BREED_DIALOG)
         mDialogSubscription?.unsubscribe()
         mDialogSubscription = breedsDialog.breedsObservable().subscribe { s -> onBreedSelected(s) }
@@ -126,7 +135,7 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
         val sex = if(maleSexView.isChecked) "M" else if(femaleSexView.isChecked) "F" else null
         val breedText = breedButton.text.toString()
         val breed = if(breedText == getString(R.string.search_breed_defaut)) null else breedText
-        startActivity(PetMasterSearchContainerActivity.getIntent(context!!, location, animal, size, age, sex, breed))
+        startActivity(PetMasterSearchContainerActivity.newIntent(context!!, location, animal, size, age, sex, breed))
     }
 
     private fun subscribeBreedsDialog() {
@@ -138,7 +147,7 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
     }
 
     private fun onBreedSelected(breed: String) {
-        breedButton.setText(breed)
+        breedButton.text = breed
         val fragment: Fragment? = childFragmentManager.findFragmentByTag(TAG_BREED_DIALOG)
         if (fragment != null && fragment is DialogFragment) {
             fragment.dismiss()
@@ -146,12 +155,12 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
     }
 
     private fun enableFab(enabled: Boolean) {
-        searchFab.setEnabled(enabled)
-        searchFab.setAlpha(if(enabled) 1f else .75f)
+        searchFab.isEnabled = enabled
+        searchFab.alpha = if(enabled) 1f else .75f
     }
 
     private fun generateSpinnerAdapter(@ArrayRes options: Int): ArrayAdapter<String> {
-        val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, resources.getStringArray(options))
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(options))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         return adapter
     }

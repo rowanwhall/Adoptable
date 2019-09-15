@@ -12,13 +12,13 @@ class LocationActivity : ContainerActivity() {
 
     companion object {
 
-        fun createIntent(context: Context): Intent {
+        fun newIntent(context: Context): Intent {
             return Intent(context, LocationActivity::class.java)
         }
     }
 
     override fun getFragment(): BaseFragment {
-        return LocationFragment.getInstance()
+        return LocationFragment.newInstance()
     }
 
 }

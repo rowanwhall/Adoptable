@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.jakewharton.rxbinding.view.RxView
 import com.squareup.picasso.Picasso
-import kotterknife.bindView
+
 import personal.rowan.petfinder.R
 import personal.rowan.petfinder.ui.base.presenter.BasePresenterFragment
 import personal.rowan.petfinder.ui.base.presenter.PresenterFactory
@@ -28,27 +28,27 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
     @Inject
     lateinit var mPresenterFactory: PetDetailPresenterFactory
 
-    private val toolbar: Toolbar by bindView(R.id.pet_detail_toolbar)
-    private val photoView: ImageView by bindView(R.id.pet_detail_photo)
-    private val headerView: TextView by bindView(R.id.pet_detail_header)
-    private val detailView: TextView by bindView(R.id.pet_detail_detail)
-    private val descriptionView: TextView by bindView(R.id.pet_detail_description)
-    private val descriptionDivider: View by bindView(R.id.pet_detail_description_divider)
-    private val phoneView: TextView by bindView(R.id.pet_detail_phone)
-    private val phoneDivider: View by bindView(R.id.pet_detail_phone_divider)
-    private val emailView: TextView by bindView(R.id.pet_detail_email)
-    private val emailDivider: View by bindView(R.id.pet_detail_email_divider)
-    private val addressView: TextView by bindView(R.id.pet_detail_address)
-    private val addressDivider: View by bindView(R.id.pet_detail_address_divider)
-    private val favoriteFab: FloatingActionButton by bindView(R.id.pet_detail_favorite_fab)
+    private lateinit var toolbar: Toolbar
+    private lateinit var photoView: ImageView
+    private lateinit var headerView: TextView
+    private lateinit var detailView: TextView
+    private lateinit var descriptionView: TextView
+    private lateinit var descriptionDivider: View
+    private lateinit var phoneView: TextView
+    private lateinit var phoneDivider: View
+    private lateinit var emailView: TextView
+    private lateinit var emailDivider: View
+    private lateinit var addressView: TextView
+    private lateinit var addressDivider: View
+    private lateinit var favoriteFab: FloatingActionButton
 
     private lateinit var mPresenter: PetDetailPresenter
 
     companion object {
 
-        private val ARG_PET_DETAIL_MODEL = "PetDetailFragment.Arg.Model"
+        private const val ARG_PET_DETAIL_MODEL = "PetDetailFragment.Arg.Model"
 
-        fun getInstance(petDetailViewState: PetDetailViewState): PetDetailFragment {
+        fun newInstance(petDetailViewState: PetDetailViewState): PetDetailFragment {
             val fragment = PetDetailFragment()
             val args = Bundle()
             args.putParcelable(ARG_PET_DETAIL_MODEL, petDetailViewState)
@@ -66,6 +66,23 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
         return inflater.inflate(R.layout.fragment_pet_detail, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar = view.findViewById(R.id.pet_detail_toolbar)
+        photoView = view.findViewById(R.id.pet_detail_photo)
+        headerView = view.findViewById(R.id.pet_detail_header)
+        detailView = view.findViewById(R.id.pet_detail_detail)
+        descriptionView = view.findViewById(R.id.pet_detail_description)
+        descriptionDivider = view.findViewById(R.id.pet_detail_description_divider)
+        phoneView = view.findViewById(R.id.pet_detail_phone)
+        phoneDivider = view.findViewById(R.id.pet_detail_phone_divider)
+        emailView = view.findViewById(R.id.pet_detail_email)
+        emailDivider = view.findViewById(R.id.pet_detail_email_divider)
+        addressView = view.findViewById(R.id.pet_detail_address)
+        addressDivider = view.findViewById(R.id.pet_detail_address_divider)
+        favoriteFab = view.findViewById(R.id.pet_detail_favorite_fab)
+    }
+
     override fun onPresenterPrepared(presenter: PetDetailPresenter) {
         mPresenter = presenter
         setDetails(arguments?.getParcelable(ARG_PET_DETAIL_MODEL))
@@ -76,12 +93,12 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        return when (item!!.itemId) {
             R.id.action_photos -> {
                 photoView.callOnClick()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -91,8 +108,8 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
         }
 
         setToolbar(toolbar, viewState.name(), true)
-        headerView.setText(viewState.header())
-        detailView.setText(viewState.detail())
+        headerView.text = viewState.header()
+        detailView.text = viewState.detail()
 
         handleDescription(viewState.description())
         handlePhone(viewState.phone())
@@ -126,7 +143,7 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
             descriptionDivider.visibility = View.GONE
             descriptionView.visibility = View.GONE
         } else {
-            descriptionView.setText(description)
+            descriptionView.text = description
         }
     }
 
@@ -135,7 +152,7 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
             phoneDivider.visibility = View.GONE
             phoneView.visibility = View.GONE
         } else {
-            phoneView.setText(phone)
+            phoneView.text = phone
             RxView.clicks(phoneView).subscribe { startActivity(IntentUtils.dialerIntent(phone)) }
         }
     }
@@ -145,7 +162,7 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
             emailDivider.visibility = View.GONE
             emailView.visibility = View.GONE
         } else {
-            emailView.setText(email)
+            emailView.text = email
             RxView.clicks(emailView).subscribe { startActivity(IntentUtils.emailIntent(email)) }
         }
     }
@@ -155,7 +172,7 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
             addressDivider.visibility = View.GONE
             addressView.visibility = View.GONE
         } else {
-            addressView.setText(address)
+            addressView.text = address
             RxView.clicks(addressView).subscribe { startActivity(IntentUtils.addressIntent(address)) }
         }
     }

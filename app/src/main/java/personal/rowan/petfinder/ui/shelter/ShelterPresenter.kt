@@ -1,21 +1,18 @@
 package personal.rowan.petfinder.ui.shelter
 
 import android.content.Context
-import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent
 import personal.rowan.petfinder.application.Resource
 import personal.rowan.petfinder.ui.base.presenter.BasePresenter
-import rx.Observable
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by Rowan Hall
  */
 class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresenter<ShelterView>(ShelterView::class.java) {
 
-    private val mCompositeSubscription: CompositeSubscription = CompositeSubscription()
-
+    private var mNetworkSubscription: Subscription? = null
     private lateinit var mLocation: String
     private var shelterResource: Resource<ShelterViewState> = Resource.starting()
 
@@ -33,7 +30,7 @@ class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresent
     private fun loadData(context: Context, clear: Boolean) {
         if (shelterResource.progress) return
 
-        mCompositeSubscription.add(mRepository.getShelters(mLocation, offset(), if (shelterResource.hasData()) shelterResource.data() else null, clear, context)
+        mNetworkSubscription = mRepository.getShelters(mLocation, offset(), if (shelterResource.hasData()) shelterResource.data() else null, clear, context)
                 .map { Resource.success(it) }
                 .startWith(Resource.progress(shelterResource))
                 .subscribeOn(Schedulers.io())
@@ -45,21 +42,15 @@ class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresent
                             shelterResource = Resource.failure(shelterResource, it)
                             publish()
                         })
-        )
+
     }
 
-    fun bindRecyclerView(context: Context, observable: Observable<RecyclerViewScrollEvent>) {
-        mCompositeSubscription.add(observable
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (mView != null
-                            && mView!!.shouldPaginate()
-                            && !shelterResource.progress
-                            && shelterResource.hasData()
-                            && !shelterResource.data().allLoaded) {
-                        loadData(context, false)
-                    }
-                })
+    fun paginate(context: Context) {
+        if (!shelterResource.progress
+                && shelterResource.hasData()
+                && !shelterResource.data().allLoaded) {
+            loadData(context, false)
+        }
     }
 
     fun onPetsClicked(pair: Pair<String?, String?>) {
@@ -91,9 +82,7 @@ class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresent
     }
 
     override fun onDestroyed() {
-        if (!mCompositeSubscription.isUnsubscribed) {
-            mCompositeSubscription.unsubscribe()
-        }
+        mNetworkSubscription?.unsubscribe()
     }
 
 }

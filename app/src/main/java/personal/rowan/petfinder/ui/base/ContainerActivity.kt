@@ -2,7 +2,7 @@ package personal.rowan.petfinder.ui.base
 
 import android.os.Bundle
 import android.widget.FrameLayout
-import kotterknife.bindView
+
 import personal.rowan.petfinder.R
 
 /**
@@ -10,11 +10,12 @@ import personal.rowan.petfinder.R
  */
 abstract class ContainerActivity : BaseActivity() {
 
-    val container: FrameLayout by bindView(R.id.container)
+    private lateinit var container: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_container)
+        container = findViewById(R.id.container)
 
         if(savedInstanceState == null) {
             supportFragmentManager

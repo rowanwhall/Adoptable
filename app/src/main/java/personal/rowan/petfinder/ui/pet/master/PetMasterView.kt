@@ -11,8 +11,6 @@ interface PetMasterView {
 
     fun onPetClicked(petMasterClickData: PetMasterViewHolder.PetMasterClickData)
 
-    fun shouldPaginate(): Boolean
-
     fun showError(error: String)
 
     fun showProgress(progress: Boolean)

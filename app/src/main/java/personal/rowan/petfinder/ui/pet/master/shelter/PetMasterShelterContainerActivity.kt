@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
-import kotterknife.bindView
+
 import personal.rowan.petfinder.R
 import personal.rowan.petfinder.ui.base.BaseActivity
 
@@ -15,16 +15,16 @@ import personal.rowan.petfinder.ui.base.BaseActivity
  */
 class PetMasterShelterContainerActivity : BaseActivity() {
 
-    private val toolbar: Toolbar by bindView(R.id.pet_master_shelter_container_toolbar)
-    private val tabLayout: TabLayout by bindView(R.id.pet_master_shelter_container_tabs)
-    private val viewPager: ViewPager by bindView(R.id.pet_master_shelter_container_pager)
+    private lateinit var toolbar: Toolbar
+    private lateinit var tabLayout: TabLayout
+    private lateinit var viewPager: ViewPager
 
     companion object {
 
-        private val ARG_SHELTER_ID = "PetMasterShelterContainerActivity.ShelterId"
-        private val ARG_SHELTER_NAME = "PetMasterShelterContainerActivity.ShelterName"
+        private const val ARG_SHELTER_ID = "PetMasterShelterContainerActivity.ShelterId"
+        private const val ARG_SHELTER_NAME = "PetMasterShelterContainerActivity.ShelterName"
 
-        fun getIntent(context: Context, shelterId: String?, shelterName: String?): Intent {
+        fun newIntent(context: Context, shelterId: String?, shelterName: String?): Intent {
             return Intent(context, PetMasterShelterContainerActivity::class.java)
                     .putExtra(ARG_SHELTER_ID, shelterId)
                     .putExtra(ARG_SHELTER_NAME, shelterName)
@@ -34,6 +34,10 @@ class PetMasterShelterContainerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pet_master_shelter_container)
+        toolbar = findViewById(R.id.pet_master_shelter_container_toolbar)
+        tabLayout = findViewById(R.id.pet_master_shelter_container_tabs)
+        viewPager = findViewById(R.id.pet_master_shelter_container_pager)
+
         setToolbar(toolbar, intent.getStringExtra(ARG_SHELTER_NAME), true)
         viewPager.setAdapter(PetMasterShelterContainerAdapter(supportFragmentManager, this, intent.getStringExtra(ARG_SHELTER_ID)))
         viewPager.offscreenPageLimit = PetMasterShelterContainerAdapter.NUM_PAGES

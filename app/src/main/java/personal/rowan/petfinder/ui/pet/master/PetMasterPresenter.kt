@@ -1,15 +1,13 @@
 package personal.rowan.petfinder.ui.pet.master
 
 import android.content.Context
-import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent
 import personal.rowan.petfinder.application.Resource
 import personal.rowan.petfinder.ui.base.presenter.BasePresenter
 import personal.rowan.petfinder.ui.pet.master.dagger.PetMasterScope
 import personal.rowan.petfinder.ui.pet.master.recycler.PetMasterViewHolder
-import rx.Observable
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by Rowan Hall
@@ -18,7 +16,7 @@ import rx.subscriptions.CompositeSubscription
 @PetMasterScope
 class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePresenter<PetMasterView>(PetMasterView::class.java) {
 
-    private val mCompositeSubscription = CompositeSubscription()
+    private var mNetworkSubscription: Subscription? = null
 
     private var mType: Int? = null
     private lateinit var mArguments: PetMasterArguments
@@ -38,10 +36,9 @@ class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePre
     }
 
     private fun loadData(context: Context, clear: Boolean) {
-        if(petResource.progress) return
+        if (petResource.progress) return
 
-        mCompositeSubscription.add(
-                mRepository.getPets(mType!!, mArguments, offset(), if (petResource.hasData()) petResource.data() else null, clear, context)
+        mNetworkSubscription = mRepository.getPets(mType!!, mArguments, offset(), if (petResource.hasData()) petResource.data() else null, clear, context)
                 .map { Resource.success(it) }
                 .startWith(Resource.progress(petResource))
                 .subscribeOn(Schedulers.io())
@@ -53,22 +50,14 @@ class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePre
                     petResource = Resource.failure(petResource, it)
                     publish()
                 })
-        )
     }
 
-    fun bindRecyclerView(context: Context, observable: Observable<RecyclerViewScrollEvent>) {
-        if (mType != PetMasterFragment.TYPE_FAVORITE) {
-            mCompositeSubscription.add(observable
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        if (mView != null
-                                && mView!!.shouldPaginate()
-                                && !petResource.progress
-                                && petResource.hasData()
-                                && !petResource.data().allLoaded) {
-                            loadData(context, false)
-                        }
-                    })
+    fun paginate(context: Context) {
+        if (mType != PetMasterFragment.TYPE_FAVORITE
+                && !petResource.progress
+                && petResource.hasData()
+                && !petResource.data().allLoaded) {
+            loadData(context, false)
         }
     }
 
@@ -102,9 +91,7 @@ class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePre
     }
 
     override fun onDestroyed() {
-        if(!mCompositeSubscription.isUnsubscribed) {
-            mCompositeSubscription.unsubscribe()
-        }
+        mNetworkSubscription?.unsubscribe()
         mRepository.closeRealm()
     }
 

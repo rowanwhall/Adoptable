@@ -21,7 +21,7 @@ class PetDetailActivity : ContainerActivity() {
     }
 
     override fun getFragment(): BaseFragment {
-        return PetDetailFragment.getInstance(intent.getParcelableExtra(ARG_PET_DETAIL_MODEL))
+        return PetDetailFragment.newInstance(intent.getParcelableExtra(ARG_PET_DETAIL_MODEL))
     }
 
 }

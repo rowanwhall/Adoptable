@@ -12,7 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import kotterknife.bindView
+
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView
 import personal.rowan.petfinder.R
 import personal.rowan.petfinder.application.UserLocationManager
@@ -23,6 +23,7 @@ import personal.rowan.petfinder.ui.pet.master.shelter.PetMasterShelterContainerA
 import personal.rowan.petfinder.ui.shelter.dagger.ShelterComponent
 import personal.rowan.petfinder.ui.shelter.recycler.ShelterAdapter
 import personal.rowan.petfinder.util.IntentUtils
+import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -39,20 +40,19 @@ class ShelterFragment : BasePresenterFragment<ShelterPresenter, ShelterView>(), 
 
     companion object {
 
-        fun getInstance(): ShelterFragment {
+        fun newInstance(): ShelterFragment {
             return ShelterFragment()
         }
     }
 
-    private val toolbar: Toolbar by bindView(R.id.shelter_toolbar)
-    private val swipeRefresh: SwipeRefreshLayout by bindView(R.id.shelter_swipe_refresh)
-    private val shelterList: RecyclerView by bindView(R.id.shelter_recycler)
-    private val emptyView: TextView by bindView(R.id.shelter_empty_message)
+    private lateinit var toolbar: Toolbar
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var shelterList: RecyclerView
+    private lateinit var emptyView: TextView
 
     private lateinit var mPresenter: ShelterPresenter
     private val mAdapter = ShelterAdapter(ArrayList())
-    private val mLayoutManager = LinearLayoutManager(context)
-    private val mCompositeSubscription = CompositeSubscription()
+    private val mViewSubscriptions = CompositeSubscription()
 
     override fun beforePresenterPrepared() {
         ShelterComponent.injector.call(this)
@@ -64,19 +64,32 @@ class ShelterFragment : BasePresenterFragment<ShelterPresenter, ShelterView>(), 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        toolbar = view.findViewById(R.id.shelter_toolbar)
+        swipeRefresh = view.findViewById(R.id.shelter_swipe_refresh)
+        shelterList = view.findViewById(R.id.shelter_recycler)
+        emptyView = view.findViewById(R.id.shelter_empty_message)
+
         setToolbar(toolbar, getString(R.string.shelter_title))
-        shelterList.layoutManager = mLayoutManager
+        val layoutManager = LinearLayoutManager(context!!)
+        shelterList.layoutManager = layoutManager
         shelterList.adapter = mAdapter
-        mCompositeSubscription.add(mAdapter.petsButtonObservable().subscribe { mPresenter.onPetsClicked(it) })
-        mCompositeSubscription.add(mAdapter.directionsButtonObservable().subscribe { mPresenter.onDirectionsClicked(it) })
+        mViewSubscriptions.add(mAdapter.petsButtonObservable().subscribe { mPresenter.onPetsClicked(it) })
+        mViewSubscriptions.add(mAdapter.directionsButtonObservable().subscribe { mPresenter.onDirectionsClicked(it) })
+        mViewSubscriptions.add(RxRecyclerView.scrollEvents(shelterList)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (layoutManager.findLastVisibleItemPosition() >= mAdapter.itemCount - 1) {
+                        mPresenter.paginate(context!!)
+                    }
+                })
         swipeRefresh.setColorSchemeResources(R.color.colorSwipeRefresh)
         swipeRefresh.setOnRefreshListener { mPresenter.refreshData(context!!) }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if(!mCompositeSubscription.isUnsubscribed) {
-            mCompositeSubscription.unsubscribe()
+        if(!mViewSubscriptions.isUnsubscribed) {
+            mViewSubscriptions.unsubscribe()
         }
     }
 
@@ -88,14 +101,13 @@ class ShelterFragment : BasePresenterFragment<ShelterPresenter, ShelterView>(), 
     private fun setupRecyclerWithZipcode(zipcode: String) {
         dismissProgressDialog()
         if (TextUtils.isEmpty(zipcode) || zipcode == UserLocationManager.ERROR) {
-            startActivity(LocationActivity.createIntent(context!!).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            startActivity(LocationActivity.newIntent(context!!).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             return
         }
 
         val context = context
         if (context != null) {
             mPresenter.initialLoad(context, zipcode)
-            mPresenter.bindRecyclerView(context, RxRecyclerView.scrollEvents(shelterList))
         }
     }
 
@@ -113,15 +125,11 @@ class ShelterFragment : BasePresenterFragment<ShelterPresenter, ShelterView>(), 
     }
 
     override fun onPetsButtonClicked(pair: Pair<String?, String?>) {
-        startActivity(PetMasterShelterContainerActivity.getIntent(context!!, pair.first, pair.second))
+        startActivity(PetMasterShelterContainerActivity.newIntent(context!!, pair.first, pair.second))
     }
 
     override fun onDirectionsButtonClicked(address: String) {
         startActivity(IntentUtils.addressIntent(address))
-    }
-
-    override fun shouldPaginate(): Boolean {
-        return mLayoutManager.findLastVisibleItemPosition() >= mAdapter.itemCount - 1
     }
 
     override fun showError(error: String) {

@@ -28,10 +28,10 @@ class PetMasterShelterContainerAdapter(fm: FragmentManager, val mContext: Contex
 
     override fun getItem(position: Int): Fragment {
         when(position) {
-            POSITION_ADOPTABLE -> return PetMasterFragment.getInstance(mShelterId, STATUS_OPTION_ADOPTABLE)
-            POSITION_HOLD -> return PetMasterFragment.getInstance(mShelterId, STATUS_OPTION_HOLD)
-            POSITION_PENDING -> return PetMasterFragment.getInstance(mShelterId, STATUS_OPTION_PENDING)
-            POSITION_ADOPTED -> return PetMasterFragment.getInstance(mShelterId, STATUS_OPTION_ADOPTED)
+            POSITION_ADOPTABLE -> return PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_ADOPTABLE)
+            POSITION_HOLD -> return PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_HOLD)
+            POSITION_PENDING -> return PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_PENDING)
+            POSITION_ADOPTED -> return PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_ADOPTED)
             else -> throw RuntimeException("Invalid viewpager position")
         }
     }

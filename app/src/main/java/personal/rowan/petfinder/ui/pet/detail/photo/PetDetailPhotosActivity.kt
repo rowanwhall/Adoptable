@@ -22,7 +22,7 @@ class PetDetailPhotosActivity : ContainerActivity() {
     }
 
     override fun getFragment(): BaseFragment {
-        return PetDetailPhotosFragment.getInstance(intent.getStringArrayListExtra(ARG_PET_DETAIL_PHOTO_URLS))
+        return PetDetailPhotosFragment.newInstance(intent.getStringArrayListExtra(ARG_PET_DETAIL_PHOTO_URLS))
     }
 
 }

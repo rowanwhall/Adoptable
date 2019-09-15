@@ -19,9 +19,9 @@ class SearchBreedsDialogFragment : DialogFragment() {
 
     companion object {
 
-        private val ARG_BREED_LIST = "SearchBreedsDialog.Arg.BreedList"
+        private const val ARG_BREED_LIST = "SearchBreedsDialog.Arg.BreedList"
 
-        fun getInstance(breeds: Breeds): SearchBreedsDialogFragment {
+        fun newInstance(breeds: Breeds): SearchBreedsDialogFragment {
             val searchBreedsDialogFragment = SearchBreedsDialogFragment()
             val args = Bundle()
             val breedList = ArrayList<String>()

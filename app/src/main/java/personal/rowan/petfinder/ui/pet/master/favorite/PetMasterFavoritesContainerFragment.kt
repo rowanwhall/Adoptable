@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import kotterknife.bindView
+
 import personal.rowan.petfinder.R
 import personal.rowan.petfinder.ui.base.BaseFragment
 import personal.rowan.petfinder.ui.pet.master.PetMasterFragment
@@ -16,11 +16,11 @@ import personal.rowan.petfinder.ui.pet.master.PetMasterFragment
  */
 class PetMasterFavoritesContainerFragment : BaseFragment() {
 
-    private val toolbar: Toolbar by bindView(R.id.pet_master_favorites_container_toolbar)
-    private val container: FrameLayout by bindView(R.id.pet_master_favorites_container)
+    private lateinit var toolbar: Toolbar
+    private lateinit var container: FrameLayout
 
     companion object {
-        fun getInstance(): PetMasterFavoritesContainerFragment {
+        fun newInstance(): PetMasterFavoritesContainerFragment {
             return PetMasterFavoritesContainerFragment()
         }
     }
@@ -31,12 +31,14 @@ class PetMasterFavoritesContainerFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        toolbar = view.findViewById(R.id.pet_master_favorites_container_toolbar)
+        container = view.findViewById(R.id.pet_master_favorites_container)
 
         setToolbar(toolbar, getString(R.string.pet_master_favorites_title))
         if(savedInstanceState == null) {
             val fragmentTransaction = childFragmentManager.beginTransaction()
             fragmentTransaction.replace(container.id,
-                    PetMasterFragment.getInstance())
+                    PetMasterFragment.newFavoriteInstance())
             fragmentTransaction.commit()
         }
     }

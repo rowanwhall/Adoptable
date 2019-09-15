@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar
 import android.transition.Transition
 import android.view.*
 import android.widget.ImageView
-import kotterknife.bindView
+
 import com.jakewharton.rxbinding.support.v4.view.RxViewPager
 import com.squareup.picasso.Picasso
 import personal.rowan.petfinder.R
@@ -25,16 +25,17 @@ import java.util.*
  */
 class PetDetailPhotosFragment : BaseFragment() {
 
-    private val toolbar: Toolbar by bindView(R.id.pet_detail_photos_toolbar)
-    private val photoPager: ViewPager by bindView(R.id.pet_detail_photos_pager)
-    private val sharedElementImage: ImageView by bindView(R.id.pet_detail_photos_shared_element)
+    private lateinit var toolbar: Toolbar
+    private lateinit var photoPager: ViewPager
+    private lateinit var sharedElementImage: ImageView
+
     private lateinit var mAdapter: PetDetailPhotosAdapter
 
     companion object {
 
-        private val ARG_PET_DETAIL_PHOTO_URLS = "PetDetailPhotosFragment.Arg.PhotoUrls"
+        private const val ARG_PET_DETAIL_PHOTO_URLS = "PetDetailPhotosFragment.Arg.PhotoUrls"
 
-        fun getInstance(photoUrls: ArrayList<String>): PetDetailPhotosFragment {
+        fun newInstance(photoUrls: ArrayList<String>): PetDetailPhotosFragment {
             val fragment = PetDetailPhotosFragment()
             val args = Bundle()
             args.putStringArrayList(ARG_PET_DETAIL_PHOTO_URLS, photoUrls)
@@ -45,13 +46,17 @@ class PetDetailPhotosFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_pet_detail_photos, container, false)
+        return inflater.inflate(R.layout.fragment_pet_detail_photos, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        toolbar = view.findViewById(R.id.pet_detail_photos_toolbar)
+        photoPager = view.findViewById(R.id.pet_detail_photos_pager)
+        sharedElementImage = view.findViewById(R.id.pet_detail_photos_shared_element)
 
         val photoUrls = arguments!!.getStringArrayList(ARG_PET_DETAIL_PHOTO_URLS)
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         mAdapter = PetDetailPhotosAdapter(context!!, photoUrls)
         val maxCount = mAdapter.count
         RxViewPager.pageSelections(photoPager).subscribe { position -> toolbar.title = getTitle(position, maxCount) }
@@ -60,8 +65,9 @@ class PetDetailPhotosFragment : BaseFragment() {
         setHasOptionsMenu(true)
 
         // Shared element transition seems to have an issue with ViewPager, so we use this fake view
+        @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         Picasso.with(context)
-                .load(if (photoUrls.isNotEmpty()) photoUrls.get(0) else null)
+                .load(if (photoUrls.isNotEmpty()) photoUrls[0] else null)
                 .into(sharedElementImage)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             photoPager.visibility = View.INVISIBLE

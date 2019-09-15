@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import kotterknife.bindView
+
 import com.jakewharton.rxbinding.view.RxView
 import com.squareup.picasso.Picasso
 import personal.rowan.petfinder.R
@@ -19,15 +19,15 @@ import rx.subjects.PublishSubject
 /**
  * Created by Rowan Hall
  */
-class PetMasterViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+class PetMasterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    val clickContainer: LinearLayout by bindView(R.id.pet_master_click_container)
-    val textContainer: LinearLayout by bindView(R.id.pet_master_text_container)
-    val photoView: ImageView by bindView(R.id.pet_master_photo)
-    val fadeView: View by bindView(R.id.pet_master_fade_view)
-    val nameView: TextView by bindView(R.id.pet_master_name)
-    val headerView: TextView by bindView(R.id.pet_master_header)
-    val detailView: TextView by bindView(R.id.pet_master_detail)
+    private val clickContainer: LinearLayout = itemView.findViewById(R.id.pet_master_click_container)
+    private val textContainer: LinearLayout = itemView.findViewById(R.id.pet_master_text_container)
+    private val photoView: ImageView = itemView.findViewById(R.id.pet_master_photo)
+    private val fadeView: View = itemView.findViewById(R.id.pet_master_fade_view)
+    private val nameView: TextView = itemView.findViewById(R.id.pet_master_name)
+    private val headerView: TextView = itemView.findViewById(R.id.pet_master_header)
+    private val detailView: TextView = itemView.findViewById(R.id.pet_master_detail)
 
     private var mClickSubscription: Subscription? = null
 

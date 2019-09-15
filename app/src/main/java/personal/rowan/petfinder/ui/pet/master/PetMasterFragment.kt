@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotterknife.bindView
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView
 import personal.rowan.petfinder.R
 import personal.rowan.petfinder.ui.base.presenter.BasePresenterFragment
@@ -18,7 +17,6 @@ import personal.rowan.petfinder.ui.pet.detail.PetDetailActivity
 import personal.rowan.petfinder.ui.pet.master.dagger.PetMasterComponent
 import personal.rowan.petfinder.ui.pet.master.dagger.PetMasterScope
 import personal.rowan.petfinder.ui.pet.master.recycler.PetMasterAdapter
-import rx.Subscription
 import java.util.*
 import javax.inject.Inject
 import android.support.v4.app.ActivityOptionsCompat
@@ -28,6 +26,8 @@ import personal.rowan.petfinder.ui.pet.master.favorite.PetMasterFavoriteArgument
 import personal.rowan.petfinder.ui.pet.master.recycler.PetMasterViewHolder
 import personal.rowan.petfinder.ui.pet.master.search.PetMasterSearchArguments
 import personal.rowan.petfinder.ui.pet.master.shelter.PetMasterShelterArguments
+import rx.android.schedulers.AndroidSchedulers
+import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by Rowan Hall
@@ -39,31 +39,29 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
     @Inject
     lateinit var mPresenterFactory: PetMasterPresenterFactory
 
-    private val swipeRefresh: SwipeRefreshLayout by bindView(R.id.pet_master_swipe_refresh)
-    private val petList: RecyclerView by bindView(R.id.pet_master_recycler)
-    private val emptyView: TextView by bindView(R.id.pet_master_empty_message)
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var petList: RecyclerView
+    private lateinit var emptyView: TextView
 
     private lateinit var mPresenter: PetMasterPresenter
     private val mAdapter = PetMasterAdapter(ArrayList())
-    private val mLayoutManager = LinearLayoutManager(context)
-    private var mItemClickSubscription: Subscription? = null
+    private val mViewSubscriptions: CompositeSubscription = CompositeSubscription()
 
     companion object {
 
-        private val ARG_PET_MASTER_TYPE = "PetMasterFragment.Arg.Type"
-        val TYPE_FIND = 0
-        val TYPE_SHELTER = 1
-        val TYPE_FAVORITE = 2
+        private const val ARG_PET_MASTER_TYPE = "PetMasterFragment.Arg.Type"
+        const val TYPE_FIND = 0
+        const val TYPE_SHELTER = 1
+        const val TYPE_FAVORITE = 2
 
-        private val ARG_PET_MASTER_ARGUMENTS = "PetMasterFragment.Arg.Arguments"
+        private const val ARG_PET_MASTER_ARGUMENTS = "PetMasterFragment.Arg.Arguments"
 
-        @JvmOverloads
-        fun getInstance(location: String,
-                        animal: String? = "",
-                        size: String? = "",
-                        age: String? = "",
-                        sex: String? = "",
-                        breed: String? = ""): PetMasterFragment {
+        fun newSearchInstance(location: String,
+                              animal: String? = "",
+                              size: String? = "",
+                              age: String? = "",
+                              sex: String? = "",
+                              breed: String? = ""): PetMasterFragment {
             val fragment = PetMasterFragment()
             val args = Bundle()
             args.putInt(ARG_PET_MASTER_TYPE, TYPE_FIND)
@@ -72,7 +70,7 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
             return fragment
         }
 
-        fun getInstance(shelterId: String, status: Char): PetMasterFragment {
+        fun newShelterInstance(shelterId: String, status: Char): PetMasterFragment {
             val fragment = PetMasterFragment()
             val args = Bundle()
             args.putInt(ARG_PET_MASTER_TYPE, TYPE_SHELTER)
@@ -81,7 +79,7 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
             return fragment
         }
 
-        fun getInstance(): PetMasterFragment {
+        fun newFavoriteInstance(): PetMasterFragment {
             val fragment = PetMasterFragment()
             val args = Bundle()
             args.putInt(ARG_PET_MASTER_TYPE, TYPE_FAVORITE)
@@ -101,18 +99,28 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        petList.layoutManager = mLayoutManager
+        swipeRefresh = view.findViewById(R.id.pet_master_swipe_refresh)
+        petList = view.findViewById(R.id.pet_master_recycler)
+        emptyView = view.findViewById(R.id.pet_master_empty_message)
+        val context = context!!
+        val layoutManager = LinearLayoutManager(context)
+        petList.layoutManager = layoutManager
         petList.adapter = mAdapter
         swipeRefresh.setColorSchemeResources(R.color.colorSwipeRefresh)
-        swipeRefresh.setOnRefreshListener { mPresenter.refreshData(context!!) }
-        mItemClickSubscription = mAdapter.itemClickObservable().subscribe { clickData -> mPresenter.onPetClicked(clickData) }
+        swipeRefresh.setOnRefreshListener { mPresenter.refreshData(context) }
+        mViewSubscriptions.add(RxRecyclerView.scrollEvents(petList)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (layoutManager.findLastVisibleItemPosition() >= mAdapter.itemCount - 1) {
+                        mPresenter.paginate(this.context!!)
+                    }
+                })
+        mViewSubscriptions.add(mAdapter.itemClickObservable().subscribe { clickData -> mPresenter.onPetClicked(clickData) })
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if (mItemClickSubscription != null && !mItemClickSubscription!!.isUnsubscribed) {
-            mItemClickSubscription!!.unsubscribe()
-        }
+        mViewSubscriptions.unsubscribe()
     }
 
     override fun onStart() {
@@ -125,7 +133,6 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
         val context = context!!
         val args = arguments!!
         mPresenter.initialLoad(context, args.getInt(ARG_PET_MASTER_TYPE), args.getParcelable(ARG_PET_MASTER_ARGUMENTS))
-        mPresenter.bindRecyclerView(context, RxRecyclerView.scrollEvents(petList))
     }
 
     override fun presenterFactory(): PresenterFactory<PetMasterPresenter> {
@@ -154,10 +161,6 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
                     arrayOf(Pair.create(activity?.findViewById(android.R.id.statusBarBackground), Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME))
         startActivity(PetDetailActivity.createIntent(context!!, petMasterClickData.viewModel()),
                 ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, *petMasterClickData.transitionViews(), *systemTransitionViews).toBundle())
-    }
-
-    override fun shouldPaginate(): Boolean {
-        return mLayoutManager.findLastVisibleItemPosition() >= mAdapter.itemCount - 1
     }
 
     override fun showError(error: String) {
