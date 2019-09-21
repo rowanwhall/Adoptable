@@ -12,7 +12,7 @@ import rx.functions.Action1
  */
 
 @PetDetailScope
-@Component(modules = arrayOf(RealmModule::class), dependencies = arrayOf(AppComponent::class))
+@Component(modules = [RealmModule::class], dependencies = [AppComponent::class])
 interface PetDetailComponent {
 
     fun inject(petDetailFragment: PetDetailFragment)

@@ -80,8 +80,7 @@ class PetfinderApiModule(private val context: Context) {
     @SuppressLint("ApplySharedPref")
     private fun refreshOAuthToken(): String? {
         val authService = RetrofitServiceFactory.createRetrofitService(Petfinder2Service::class.java, Petfinder2Service.BASE_URL, OkHttpClient(), Gson())
-        val authResponse = authService.getOAuthToken().execute().body() ?: return null
-        val accessToken = authResponse.access_token
+        val accessToken = authService.getOAuthToken().execute().body()?.accessToken ?: return null
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREFS_KEY_OAUTH_TOKEN, accessToken).commit()
         return accessToken
     }

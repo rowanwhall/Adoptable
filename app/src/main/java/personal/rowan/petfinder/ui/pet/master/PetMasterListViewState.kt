@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import personal.rowan.petfinder.R
+import personal.rowan.petfinder.model.Animal
 import personal.rowan.petfinder.model.pet.Pet
 import personal.rowan.petfinder.util.PetUtils
 import personal.rowan.petfinder.util.StringUtils
@@ -13,21 +14,12 @@ import personal.rowan.petfinder.util.StringUtils
  */
 open class PetMasterListViewState : Parcelable {
 
-    constructor(context: Context, pet: Pet, favorite: Boolean) {
-        mId = pet.id?.`$t`
-        mPhotoUrl = PetUtils.findFirstLargePhotoUrl(pet.media?.photos?.photo)
-        mName = pet.name?.`$t`
-        mHeader = context.getString(
-                R.string.pet_master_header,
-                pet.animal?.`$t`,
-                pet.breeds?.breed?.get(0)?.`$t`)
-        mDetail = context.getString(
-                R.string.pet_master_detail,
-                PetUtils.formatSize(pet.size?.`$t`),
-                pet.age!!.`$t`,
-                PetUtils.formatSex(pet.sex?.`$t`),
-                pet.contact?.city?.`$t`,
-                pet.contact?.state?.`$t`)
+    constructor(context: Context, animal: Animal, favorite: Boolean) {
+        mId = animal.id
+        mPhotoUrl = PetUtils.findFirstLargePhotoUrl(animal.photos)
+        mName = animal.name
+        mHeader = context.getString(R.string.pet_master_header, animal.type, animal.breeds.primary)
+        mDetail = context.getString(R.string.pet_master_detail, animal.size, animal.age, animal.gender, animal.contact.address.city, animal.contact.address.state)
         mFavorite = favorite
     }
 
@@ -82,7 +74,7 @@ open class PetMasterListViewState : Parcelable {
         }
     }
 
-    constructor(source: Parcel) : this(source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readInt() != 0)
+    constructor(source: Parcel) : this(source.readString(), source.readString(), source.readString(), source.readString() ?: "", source.readString() ?: "", source.readInt() != 0)
 
     override fun describeContents() = 0
 

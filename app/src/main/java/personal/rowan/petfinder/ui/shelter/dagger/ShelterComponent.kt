@@ -21,6 +21,7 @@ interface ShelterComponent {
         val injector: Action1<ShelterFragment> = Action1 {
             DaggerShelterComponent.builder()
                     .appComponent(App.applicationComponent(it.context!!))
+                    .petfinderApiModule(PetfinderApiModule(it.context!!.applicationContext))
                     .build()
                     .inject(it)
         }

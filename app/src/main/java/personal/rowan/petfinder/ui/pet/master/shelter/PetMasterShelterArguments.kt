@@ -7,14 +7,14 @@ import personal.rowan.petfinder.ui.pet.master.PetMasterArguments
 /**
  * Created by Rowan Hall
  */
-class PetMasterShelterArguments constructor(private val mShelterId: String, private val mStatus: Char) : PetMasterArguments {
+class PetMasterShelterArguments (private val mShelterId: String, private val mStatus: String) : PetMasterArguments {
 
     fun shelterId(): String {
         return mShelterId
     }
 
-    fun status(): Char {
-        return mStatus;
+    fun status(): String {
+        return mStatus
     }
 
     companion object {
@@ -24,7 +24,7 @@ class PetMasterShelterArguments constructor(private val mShelterId: String, priv
         }
     }
 
-    constructor(source: Parcel) : this(source.readString(), source.readByte().toChar())
+    constructor(source: Parcel) : this(source.readString() ?: "", source.readString() ?: "")
 
     override fun describeContents() = 0
 

@@ -24,12 +24,11 @@
     <string name="pet_master_tab_reptiles">Reptiles</string>
     <string name="pet_master_tab_small_furry">Small Furry</string>
     <string name="pet_master_tab_horses">Horses</string>
-    <string name="pet_master_tab_pigs">Pigs</string>
+    <string name="pet_master_tab_rabbits">Rabbits</string>
     <string name="pet_master_tab_barnyard">Barnyard</string>
     <string name="pet_master_tab_adoptable">Adoptable</string>
-    <string name="pet_master_tab_hold">Hold</string>
-    <string name="pet_master_tab_pending">Pending</string>
     <string name="pet_master_tab_adopted">Adopted</string>
+    <string name="pet_master_tab_found">Found</string>
     <string name="pet_master_search_title">Search Results</string>
     <string name="pet_master_favorites_title">Favorite Pets</string>
     <string name="pet_image_content_description">The image for an animal</string>
@@ -64,7 +63,7 @@
         <item name="search_animal_option_reptiles">Reptiles</item>
         <item name="search_animal_option_small_furry">Small Furry</item>
         <item name="search_animal_option_horses">Horses</item>
-        <item name="search_animal_option_pigs">Pigs</item>
+        <item name="search_animal_option_rabbits">Rabbits</item>
         <item name="search_animal_option_barnyard">Barnyard</item>
     </string-array>
     <string-array name="search_size_options">

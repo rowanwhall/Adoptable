@@ -21,12 +21,12 @@ class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePre
     private var mType: Int? = null
     private lateinit var mArguments: PetMasterArguments
 
-    private var petResource: Resource<PetMasterViewState> = Resource.starting()
+    private var mPetResource: Resource<PetMasterViewState> = Resource.starting()
 
     fun initialLoad(context: Context, type: Int?, arguments: PetMasterArguments) {
         mType = type
         mArguments = arguments
-        if (!petResource.hasData()) {
+        if (!mPetResource.hasData()) {
             loadData(context, true)
         }
     }
@@ -36,28 +36,30 @@ class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePre
     }
 
     private fun loadData(context: Context, clear: Boolean) {
-        if (petResource.progress) return
+        if (mPetResource.progress) return
 
-        mNetworkSubscription = mRepository.getPets(mType!!, mArguments, offset(), if (petResource.hasData()) petResource.data() else null, clear, context)
+        mNetworkSubscription = mRepository.getPets(mType!!, mArguments, nextPage(), if (mPetResource.hasData()) mPetResource.data() else null, clear, context)
                 .map { Resource.success(it) }
-                .startWith(Resource.progress(petResource))
+                .startWith(Resource.progress(mPetResource))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    petResource = it
+                    mPetResource = it
                     publish()
                 }, {
-                    petResource = Resource.failure(petResource, it)
+                    mPetResource = Resource.failure(mPetResource, it)
                     publish()
                 })
     }
 
     fun paginate(context: Context) {
         if (mType != PetMasterFragment.TYPE_FAVORITE
-                && !petResource.progress
-                && petResource.hasData()
-                && !petResource.data().allLoaded) {
-            loadData(context, false)
+                && !mPetResource.progress
+                && mPetResource.hasData()) {
+            val data = mPetResource.data()
+            if (data.currentPage < data.totalPages) {
+                loadData(context, false)
+            }
         }
     }
 
@@ -71,8 +73,8 @@ class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePre
         }
     }
 
-    private fun offset(): String {
-        return if (petResource.hasData()) petResource.data().offset else "0"
+    private fun nextPage(): Int {
+        return if (mPetResource.hasData()) mPetResource.data().currentPage + 1 else 1
     }
 
     override fun publish() {
@@ -81,12 +83,12 @@ class PetMasterPresenter(private var mRepository: PetMasterRepository) : BasePre
         }
 
         val view = mView!!
-        view.showProgress(petResource.progress)
-        if (petResource.hasData()) {
-            view.displayPets(petResource.data().petData, mType != PetMasterFragment.TYPE_FAVORITE)
+        view.showProgress(mPetResource.progress)
+        if (mPetResource.hasData()) {
+            view.displayPets(mPetResource.data().petData, mType != PetMasterFragment.TYPE_FAVORITE)
         }
-        if (petResource.hasError()) {
-            view.showError(petResource.error().toString())
+        if (mPetResource.hasError()) {
+            view.showError(mPetResource.error().toString())
         }
     }
 

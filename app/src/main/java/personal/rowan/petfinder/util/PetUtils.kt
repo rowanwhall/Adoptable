@@ -1,109 +1,89 @@
 package personal.rowan.petfinder.util
 
-import personal.rowan.petfinder.model.pet.Photo
+import personal.rowan.petfinder.model.Photo
 import java.net.URLDecoder
-import java.util.*
 
 /**
  * Created by Rowan Hall
  */
 object PetUtils {
 
-    val ANIMAL_OPTION_DOG = "dog"
-    val ANIMAL_OPTION_CAT = "cat"
-    val ANIMAL_OPTION_BIRD = "bird"
-    val ANIMAL_OPTION_REPTILE = "reptile"
-    val ANIMAL_OPTION_SMALL_FURRY = "smallfurry"
-    val ANIMAL_OPTION_HORSE = "horse"
-    val ANIMAL_OPTION_PIG = "pig"
-    val ANIMAL_OPTION_BARNYARD = "barnyard"
+    // dog, cat, rabbit, small-furry, horse, bird, scales-fins-other, barnyard
 
-    fun formatSize(size: String?): String {
-        when(size) {
-            "S" -> return "Small"
-            "M" -> return "Medium"
-            "L" -> return "Large"
-            "XL" -> return "Extra Large"
-            null -> return ""
-            else -> return size
-        }
-    }
-
-    fun formatSex(sex: String?): String {
-        when(sex) {
-            "M" -> return "Male"
-            "F" -> return "Female"
-            null -> return ""
-            else -> return sex
-        }
-    }
+    const val ANIMAL_OPTION_DOG = "dog"
+    const val ANIMAL_OPTION_CAT = "cat"
+    const val ANIMAL_OPTION_BIRD = "bird"
+    const val ANIMAL_OPTION_REPTILE = "scales-fins-other"
+    const val ANIMAL_OPTION_SMALL_FURRY = "small-furry"
+    const val ANIMAL_OPTION_HORSE = "horse"
+    const val ANIMAL_OPTION_RABBIT = "rabbit"
+    const val ANIMAL_OPTION_BARNYARD = "barnyard"
 
     fun searchAnimalByIndex(index: Int): String? {
-        when(index) {
-            1 -> return ANIMAL_OPTION_DOG
-            2 -> return ANIMAL_OPTION_CAT
-            3 -> return ANIMAL_OPTION_BIRD
-            4 -> return ANIMAL_OPTION_REPTILE
-            5 -> return ANIMAL_OPTION_SMALL_FURRY
-            6 -> return ANIMAL_OPTION_HORSE
-            7 -> return ANIMAL_OPTION_PIG
-            8 -> return ANIMAL_OPTION_BARNYARD
-            else -> return null
+        return when(index) {
+            1 -> ANIMAL_OPTION_DOG
+            2 -> ANIMAL_OPTION_CAT
+            3 -> ANIMAL_OPTION_BIRD
+            4 -> ANIMAL_OPTION_REPTILE
+            5 -> ANIMAL_OPTION_SMALL_FURRY
+            6 -> ANIMAL_OPTION_HORSE
+            7 -> ANIMAL_OPTION_RABBIT
+            8 -> ANIMAL_OPTION_BARNYARD
+            else -> null
         }
     }
 
     fun searchSizeByIndex(index: Int): String? {
-        when(index) {
-            1 -> return "S"
-            2 -> return "M"
-            3 -> return "L"
-            4 -> return "XL"
-            else -> return null
+        return when(index) {
+            1 -> "S"
+            2 -> "M"
+            3 -> "L"
+            4 -> "XL"
+            else -> null
         }
     }
 
     fun searchAgeByIndex(index: Int): String? {
-        when(index) {
-            1 -> return "Baby"
-            2 -> return "Young"
-            3 -> return "Adult"
-            4 -> return "Senior"
-            else -> return null
+        return when(index) {
+            1 -> "Baby"
+            2 -> "Young"
+            3 -> "Adult"
+            4 -> "Senior"
+            else -> null
         }
     }
 
-    fun findFirstLargePhotoUrl(photos: List<Photo>?): String? {
-        val largePhotos = findLargePhotoUrls(photos, true)
-        return if (largePhotos.isNotEmpty()) largePhotos.get(0) else null
-    }
-
-    @JvmOverloads fun findLargePhotoUrls(photos: List<Photo>?, endAfterFirst: Boolean = false): List<String> {
-        val largePhotos = ArrayList<String>()
-
-        if (photos != null) {
-            for (photo in photos) {
-                val photoUrl = photo.`$t`
-                if (photoUrl != null) {
-                    val queryPairs = LinkedHashMap<String, String>()
-                    val pairStrings = photoUrl.split("&")
-                    for (pairString in pairStrings) {
-                        val equalsIndex = pairString.indexOf("=")
-                        if (equalsIndex > 0) {
-                            queryPairs.put(URLDecoder.decode(pairString.substring(0, equalsIndex), "UTF-8"), URLDecoder.decode(pairString.substring(equalsIndex + 1), "UTF-8"))
-                            val width = queryPairs.get("width")
-                            if (width != null && width.toInt() >= 400) {
-                                largePhotos.add(photoUrl)
-                                if (endAfterFirst) {
-                                    return largePhotos
-                                }
-                            }
-                        }
-                    }
-                }
+    fun findFirstLargePhotoUrl(photos: List<Photo>): String? {
+        if (photos.isNotEmpty()) {
+            for(photo in photos) {
+                if (photo.full != null) return decodePhotoUrl(photo.full)
+            }
+            for(photo in photos) {
+                if (photo.large != null) return decodePhotoUrl(photo.large)
+            }
+            for(photo in photos) {
+                if (photo.medium != null) return decodePhotoUrl(photo.medium)
+            }
+            for(photo in photos) {
+                if (photo.small != null) return decodePhotoUrl(photo.small)
             }
         }
+        return null
+    }
 
+    fun findLargePhotoUrls(photos: List<Photo>): List<String> {
+        val largePhotos = mutableListOf<String>()
+        for (photo in photos) {
+            val largestPhoto = photo.full ?: photo.large ?: photo.medium ?: photo.small
+            if (largestPhoto != null) {
+                largePhotos.add(decodePhotoUrl(largestPhoto))
+            }
+        }
         return largePhotos
+    }
+
+    private fun decodePhotoUrl(photoUrl: String): String {
+        return URLDecoder.decode(photoUrl, "UTF-8")
     }
 
 }

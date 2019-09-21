@@ -20,6 +20,7 @@ interface SearchComponent {
         val injector: Action1<SearchFragment> = Action1 {
             DaggerSearchComponent.builder()
                     .appComponent(App.applicationComponent(it.context!!))
+                    .petfinderApiModule(PetfinderApiModule(it.context!!.applicationContext))
                     .build()
                     .inject(it)
         }

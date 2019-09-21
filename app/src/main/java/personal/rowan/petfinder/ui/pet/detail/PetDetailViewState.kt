@@ -4,8 +4,8 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import personal.rowan.petfinder.R
+import personal.rowan.petfinder.model.Animal
 import personal.rowan.petfinder.ui.pet.master.favorite.RealmFavoritesManager
-import personal.rowan.petfinder.model.pet.Pet
 import personal.rowan.petfinder.ui.pet.master.PetMasterListViewState
 import personal.rowan.petfinder.util.PetUtils
 import personal.rowan.petfinder.util.StringUtils
@@ -16,19 +16,20 @@ import java.util.*
  */
 class PetDetailViewState : PetMasterListViewState, Parcelable {
 
-    constructor(context: Context, pet: Pet, favorite: Boolean): super(context, pet, favorite) {
-        mDescription = pet.description?.`$t`
+    constructor(context: Context, animal: Animal, favorite: Boolean): super(context, animal, favorite) {
+        mDescription = animal.description
 
-        val contact = pet.contact
-        mPhone = contact?.phone?.`$t`
-        mEmail = contact?.email?.`$t`
+        val contact = animal.contact
+        mPhone = contact.phone
+        mEmail = contact.email
 
+        val address = contact.address
         val addressStrings: MutableList<String?> = ArrayList()
-        addressStrings.add(contact?.address1?.`$t`)
-        addressStrings.add(contact?.address2?.`$t`)
-        addressStrings.add(context.getString(R.string.shelter_subtitle, contact?.city?.`$t`, contact?.state?.`$t`, contact?.zip?.`$t`))
+        addressStrings.add(address.address1)
+        addressStrings.add(address.address2)
+        addressStrings.add(context.getString(R.string.shelter_subtitle, address.address1, address.state, address.postcode))
         mAddress = StringUtils.separateWithDelimiter(addressStrings, "\n")
-        mPhotos = PetUtils.findLargePhotoUrls(pet.media?.photos?.photo)
+        mPhotos = PetUtils.findLargePhotoUrls(animal.photos)
     }
 
     constructor(id: String?, photoUrl: String?, name: String?, header: String, detail: String, favorite: Boolean, description: String, phone: String?, email: String?, address: String?):
@@ -81,12 +82,10 @@ class PetDetailViewState : PetMasterListViewState, Parcelable {
             override fun newArray(size: Int): Array<PetDetailViewState?> = arrayOfNulls(size)
         }
 
-        fun fromPetList(context: Context, pets: List<Pet>?, favoritesManager: RealmFavoritesManager): List<PetDetailViewState> {
+        fun fromAnimalList(context: Context, animals: List<Animal>, favoritesManager: RealmFavoritesManager): List<PetDetailViewState> {
             val viewStates: MutableList<PetDetailViewState> = ArrayList()
-            if (pets != null) {
-                for (pet in pets) {
-                    viewStates.add(PetDetailViewState(context, pet, favoritesManager.isFavorite(pet.id?.`$t`)))
-                }
+            for (animal in animals) {
+                viewStates.add(PetDetailViewState(context, animal, favoritesManager.isFavorite(animal.id)))
             }
             return viewStates
         }
@@ -96,10 +95,10 @@ class PetDetailViewState : PetMasterListViewState, Parcelable {
             source.readString(),
             source.readString(),
             source.readString(),
-            source.readString(),
-            source.readString(),
+            source.readString() ?: "",
+            source.readString() ?: "",
             source.readInt() != 0,
-            source.readString(),
+            source.readString() ?: "",
             source.readString(),
             source.readString(),
             source.readString()) {

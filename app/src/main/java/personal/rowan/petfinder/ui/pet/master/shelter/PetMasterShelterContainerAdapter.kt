@@ -10,28 +10,27 @@ import personal.rowan.petfinder.ui.pet.master.PetMasterFragment
 /**
  * Created by Rowan Hall
  */
-class PetMasterShelterContainerAdapter(fm: FragmentManager, val mContext: Context, val mShelterId: String) : FragmentStatePagerAdapter(fm) {
+class PetMasterShelterContainerAdapter(fm: FragmentManager,
+                                       private val mContext: Context,
+                                       private val mShelterId: String) : FragmentStatePagerAdapter(fm) {
 
     companion object {
-        val NUM_PAGES = 4
+        const val NUM_PAGES = 3
 
-        private val POSITION_ADOPTABLE = 0
-        private val POSITION_HOLD = 1
-        private val POSITION_PENDING = 2
-        private val POSITION_ADOPTED = 3
+        private const val POSITION_ADOPTABLE = 0
+        private const val POSITION_ADOPTED = 1
+        private const val POSITION_FOUND = 2
 
-        private val STATUS_OPTION_ADOPTABLE = 'A'
-        private val STATUS_OPTION_HOLD = 'H'
-        private val STATUS_OPTION_PENDING = 'P'
-        private val STATUS_OPTION_ADOPTED = 'X'
+        private const val STATUS_OPTION_ADOPTABLE = "adoptable"
+        private const val STATUS_OPTION_ADOPTED = "adopted"
+        private const val STATUS_OPTION_FOUND = "found"
     }
 
     override fun getItem(position: Int): Fragment {
-        when(position) {
-            POSITION_ADOPTABLE -> return PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_ADOPTABLE)
-            POSITION_HOLD -> return PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_HOLD)
-            POSITION_PENDING -> return PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_PENDING)
-            POSITION_ADOPTED -> return PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_ADOPTED)
+        return when(position) {
+            POSITION_ADOPTABLE -> PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_ADOPTABLE)
+            POSITION_ADOPTED -> PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_ADOPTED)
+            POSITION_FOUND -> PetMasterFragment.newShelterInstance(mShelterId, STATUS_OPTION_FOUND)
             else -> throw RuntimeException("Invalid viewpager position")
         }
     }
@@ -41,11 +40,10 @@ class PetMasterShelterContainerAdapter(fm: FragmentManager, val mContext: Contex
     }
 
     override fun getPageTitle(position: Int): CharSequence {
-        when(position) {
-            POSITION_ADOPTABLE -> return mContext.getString(R.string.pet_master_tab_adoptable)
-            POSITION_HOLD -> return mContext.getString(R.string.pet_master_tab_hold)
-            POSITION_PENDING -> return mContext.getString(R.string.pet_master_tab_pending)
-            POSITION_ADOPTED -> return mContext.getString(R.string.pet_master_tab_adopted)
+        return when(position) {
+            POSITION_ADOPTABLE -> mContext.getString(R.string.pet_master_tab_adoptable)
+            POSITION_ADOPTED -> mContext.getString(R.string.pet_master_tab_adopted)
+            POSITION_FOUND -> mContext.getString(R.string.pet_master_tab_found)
             else -> throw RuntimeException("Invalid viewpager position")
         }
     }

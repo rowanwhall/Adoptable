@@ -70,7 +70,7 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
             return fragment
         }
 
-        fun newShelterInstance(shelterId: String, status: Char): PetMasterFragment {
+        fun newShelterInstance(shelterId: String, status: String): PetMasterFragment {
             val fragment = PetMasterFragment()
             val args = Bundle()
             args.putInt(ARG_PET_MASTER_TYPE, TYPE_SHELTER)

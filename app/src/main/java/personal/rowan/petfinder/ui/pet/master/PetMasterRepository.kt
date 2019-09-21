@@ -1,8 +1,8 @@
 package personal.rowan.petfinder.ui.pet.master
 
 import android.content.Context
-import personal.rowan.petfinder.model.pet.PetResult
-import personal.rowan.petfinder.network.PetfinderService
+import personal.rowan.petfinder.model.AnimalsResponse
+import personal.rowan.petfinder.network.Petfinder2Service
 import personal.rowan.petfinder.ui.pet.master.dagger.PetMasterScope
 import personal.rowan.petfinder.ui.pet.master.favorite.RealmFavoritesManager
 import personal.rowan.petfinder.ui.pet.master.search.PetMasterSearchArguments
@@ -15,25 +15,26 @@ import javax.inject.Inject
  */
 
 @PetMasterScope
-class PetMasterRepository @Inject constructor(private val mPetfinderService: PetfinderService, private val mRealmManager: RealmFavoritesManager) {
+class PetMasterRepository @Inject constructor(private val mPetfinder2Service: Petfinder2Service,
+                                              private val mRealmManager: RealmFavoritesManager) {
 
-    fun getPets(type: Int, args: PetMasterArguments, offset: String, initialState: PetMasterViewState?, clear: Boolean, context: Context): Observable<PetMasterViewState> {
-        val resultObservable: Observable<PetResult>
-        when (type) {
+    fun getPets(type: Int, args: PetMasterArguments, page: Int, initialState: PetMasterViewState?, clear: Boolean, context: Context): Observable<PetMasterViewState> {
+        val resultObservable: Observable<AnimalsResponse>
+        resultObservable = when (type) {
             PetMasterFragment.TYPE_FIND -> {
                 val searchArgs: PetMasterSearchArguments = args as PetMasterSearchArguments
-                resultObservable = mPetfinderService.getNearbyPets(searchArgs.location(), searchArgs.animal(), searchArgs.size(), searchArgs.age(), searchArgs.size(), searchArgs.breed(), offset)
+                mPetfinder2Service.getAnimals(searchArgs.location(), searchArgs.animal(), searchArgs.size(), searchArgs.age(), searchArgs.sex(), searchArgs.breed(), page)
             }
             PetMasterFragment.TYPE_SHELTER -> {
                 val shelterArgs: PetMasterShelterArguments = args as PetMasterShelterArguments
-                resultObservable = mPetfinderService.getPetsForShelter(shelterArgs.shelterId(), shelterArgs.status(), offset)
+                mPetfinder2Service.getAnimalsForShelter(shelterArgs.shelterId(), shelterArgs.status(), page)
             }
             PetMasterFragment.TYPE_FAVORITE -> {
-                return Observable.just(PetMasterViewState(mRealmManager.loadFavorites(), "0", true))
+                return Observable.just(PetMasterViewState(mRealmManager.loadFavorites(), 1, 1))
             }
             else -> throw RuntimeException("invalid pet master type")
         }
-        return resultObservable.map { PetMasterViewState.fromPetResult(initialState, it, clear, context) }
+        return resultObservable.map { PetMasterViewState.fromAnimalsResponse(initialState, it, clear, context) }
     }
 
     fun closeRealm() {

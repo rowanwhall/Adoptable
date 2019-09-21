@@ -1,15 +1,16 @@
 package personal.rowan.petfinder.model
 
+import com.google.gson.annotations.SerializedName
 import personal.rowan.petfinder.network.Petfinder2Service
 
 /**
  * Created by Rowan Hall
  */
 
-data class OAuthTokenBody(val grant_type: String = "client_credentials",
-                          val client_id: String = Petfinder2Service.API_KEY,
-                          val client_secret: String = Petfinder2Service.SECRET)
+data class OAuthTokenBody(@SerializedName("grant_type") val grantType: String = "client_credentials",
+                          @SerializedName("client_id") val clientId: String = Petfinder2Service.API_KEY,
+                          @SerializedName("client_secret") val clientSecret: String = Petfinder2Service.SECRET)
 
-data class OAuthTokenResponse(val token_type: String,
-                              val expires_in: Long,
-                              val access_token: String)
+data class OAuthTokenResponse(@SerializedName("token_type") val tokenType: String,
+                              @SerializedName("expires_in") val expiresIn: Long,
+                              @SerializedName("access_token") val accessToken: String)

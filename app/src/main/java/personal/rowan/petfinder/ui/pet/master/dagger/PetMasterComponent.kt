@@ -22,6 +22,7 @@ interface PetMasterComponent {
         val injector: Action1<PetMasterFragment> = Action1 {
             DaggerPetMasterComponent.builder()
                     .appComponent(App.applicationComponent(it.context!!))
+                    .petfinderApiModule(PetfinderApiModule(it.context!!.applicationContext))
                     .build()
                     .inject(it)
         }

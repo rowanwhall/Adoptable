@@ -14,16 +14,16 @@ import personal.rowan.petfinder.util.PetUtils
 class PetMasterNearbyContainerAdapter(fm: FragmentManager, val mContext: Context, val mLocation: String) : FragmentStatePagerAdapter(fm) {
 
     companion object {
-        val NUM_PAGES = 8
+        const val NUM_PAGES = 8
 
-        private val POSITION_DOG = 0
-        private val POSITION_CAT = 1
-        private val POSITION_BIRD = 2
-        private val POSITION_REPTILE = 3
-        private val POSITION_SMALL_FURRY = 4
-        private val POSITION_HORSE = 5
-        private val POSITION_PIG = 6
-        private val POSITION_BARNYARD = 7
+        private const val POSITION_DOG = 0
+        private const val POSITION_CAT = 1
+        private const val POSITION_BIRD = 2
+        private const val POSITION_REPTILE = 3
+        private const val POSITION_SMALL_FURRY = 4
+        private const val POSITION_HORSE = 5
+        private const val POSITION_RABBIT = 6
+        private const val POSITION_BARNYARD = 7
     }
 
     override fun getItem(position: Int): Fragment {
@@ -34,7 +34,7 @@ class PetMasterNearbyContainerAdapter(fm: FragmentManager, val mContext: Context
             POSITION_REPTILE -> return PetMasterFragment.newSearchInstance(mLocation, PetUtils.ANIMAL_OPTION_REPTILE)
             POSITION_SMALL_FURRY -> return PetMasterFragment.newSearchInstance(mLocation, PetUtils.ANIMAL_OPTION_SMALL_FURRY)
             POSITION_HORSE -> return PetMasterFragment.newSearchInstance(mLocation, PetUtils.ANIMAL_OPTION_HORSE)
-            POSITION_PIG -> return PetMasterFragment.newSearchInstance(mLocation, PetUtils.ANIMAL_OPTION_PIG)
+            POSITION_RABBIT -> return PetMasterFragment.newSearchInstance(mLocation, PetUtils.ANIMAL_OPTION_RABBIT)
             POSITION_BARNYARD -> return PetMasterFragment.newSearchInstance(mLocation, PetUtils.ANIMAL_OPTION_BARNYARD)
             else -> throw RuntimeException("Invalid viewpager position")
         }
@@ -52,7 +52,7 @@ class PetMasterNearbyContainerAdapter(fm: FragmentManager, val mContext: Context
             POSITION_REPTILE -> return mContext.getString(R.string.pet_master_tab_reptiles)
             POSITION_SMALL_FURRY -> return mContext.getString(R.string.pet_master_tab_small_furry)
             POSITION_HORSE -> return mContext.getString(R.string.pet_master_tab_horses)
-            POSITION_PIG -> return mContext.getString(R.string.pet_master_tab_pigs)
+            POSITION_RABBIT -> return mContext.getString(R.string.pet_master_tab_rabbits)
             POSITION_BARNYARD -> return mContext.getString(R.string.pet_master_tab_barnyard)
             else -> throw RuntimeException("Invalid viewpager position")
         }

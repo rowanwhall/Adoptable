@@ -13,7 +13,6 @@ import rx.Observable
  */
 interface Petfinder2Service {
 
-    @FormUrlEncoded
     @POST("oauth2/token")
     fun getOAuthToken(@Body body: OAuthTokenBody = OAuthTokenBody()): Call<OAuthTokenResponse>
 
@@ -24,10 +23,15 @@ interface Petfinder2Service {
                    @Query("age") age: String?,
                    @Query("gender") gender: String?,
                    @Query("breed") breed: String?,
-                   @Query("page") page: Int?): Observable<AnimalsResponse>
+                   @Query("page") page: Int): Observable<AnimalsResponse>
+
+    @GET("animals")
+    fun getAnimalsForShelter(@Query("organization") organization: String,
+                             @Query("status") status: String,
+                             @Query("page") page: Int): Observable<AnimalsResponse>
 
     companion object {
-        const val BASE_URL = "http://api.petfinder.com/v2/"
+        const val BASE_URL = "https://api.petfinder.com/v2/"
         const val API_KEY = BuildConfig.PET_FINDER_2_API_KEY
         const val SECRET = BuildConfig.PET_FINDER_2_SECRET
     }
