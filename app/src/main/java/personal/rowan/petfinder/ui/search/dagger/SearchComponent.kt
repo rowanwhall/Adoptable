@@ -11,17 +11,17 @@ import rx.functions.Action1
  * Created by Rowan Hall
  */
 @SearchScope
-@Component(modules = arrayOf(PetfinderApiModule::class), dependencies = arrayOf(AppComponent::class))
+@Component(modules = [PetfinderApiModule::class], dependencies = [AppComponent::class])
 interface SearchComponent {
 
     fun inject(searchFragment: SearchFragment)
 
     companion object {
-        val injector: Action1<SearchFragment> = Action1 { searchFragment ->
+        val injector: Action1<SearchFragment> = Action1 {
             DaggerSearchComponent.builder()
-                    .appComponent(App.applicationComponent(searchFragment.context!!))
+                    .appComponent(App.applicationComponent(it.context!!))
                     .build()
-                    .inject(searchFragment)
+                    .inject(it)
         }
     }
 

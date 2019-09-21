@@ -9,7 +9,7 @@ import personal.rowan.petfinder.application.dagger.module.AppModule
  * Created by Rowan Hall
  */
 
-@Component(modules = arrayOf(AppModule::class))
+@Component(modules = [AppModule::class])
 interface AppComponent {
 
     fun context(): Context

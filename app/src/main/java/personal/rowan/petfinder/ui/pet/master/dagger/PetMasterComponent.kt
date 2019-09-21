@@ -13,17 +13,17 @@ import rx.functions.Action1
  */
 
 @PetMasterScope
-@Component(modules = arrayOf(PetfinderApiModule::class, RealmModule::class), dependencies = arrayOf(AppComponent::class))
+@Component(modules = [PetfinderApiModule::class, RealmModule::class], dependencies = [AppComponent::class])
 interface PetMasterComponent {
 
     fun inject(petMasterFragment: PetMasterFragment)
 
     companion object {
-        val injector: Action1<PetMasterFragment> = Action1 { petmasterFragment ->
+        val injector: Action1<PetMasterFragment> = Action1 {
             DaggerPetMasterComponent.builder()
-                    .appComponent(App.applicationComponent(petmasterFragment.context!!))
+                    .appComponent(App.applicationComponent(it.context!!))
                     .build()
-                    .inject(petmasterFragment)
+                    .inject(it)
         }
     }
 

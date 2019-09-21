@@ -12,7 +12,7 @@ import rx.functions.Action1
  */
 
 @LocationScope
-@Component(modules = arrayOf(UserLocationModule::class), dependencies = arrayOf(AppComponent::class))
+@Component(modules = [UserLocationModule::class], dependencies = [AppComponent::class])
 interface LocationComponent {
 
     fun inject(locationFragment: LocationFragment)

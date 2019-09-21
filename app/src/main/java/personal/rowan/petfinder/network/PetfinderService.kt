@@ -36,8 +36,8 @@ interface PetfinderService {
     fun getBreedList(@Query("animal") animal: String): Observable<BreedListResult>
 
     companion object {
-        val BASE_URL = "http://api.petfinder.com/"
-        val API_KEY: String = BuildConfig.PET_FINDER_API_KEY
+        const val BASE_URL = "http://api.petfinder.com/"
+        const val API_KEY = BuildConfig.PET_FINDER_API_KEY
     }
 
 }

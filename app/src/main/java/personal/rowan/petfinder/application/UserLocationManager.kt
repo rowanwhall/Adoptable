@@ -19,13 +19,15 @@ import javax.inject.Singleton
 @Singleton
 class UserLocationManager private constructor() {
 
-    private object Holder { val INSTANCE = UserLocationManager() }
+    private object Holder {
+        val INSTANCE = UserLocationManager()
+    }
 
     companion object {
         val INSTANCE: UserLocationManager by lazy { Holder.INSTANCE }
-        val ERROR = "ERROR"
-        val PREFS_NAME = "PREFS_NAME"
-        val PREFS_KEY_ZIPCODE = "ZIPCODE"
+        const val ERROR = "ERROR"
+        const val PREFS_NAME = "PREFS_NAME"
+        const val PREFS_KEY_ZIPCODE = "ZIPCODE"
     }
 
     private var mSharedPrefs: SharedPreferences? = null
@@ -42,16 +44,15 @@ class UserLocationManager private constructor() {
     @SuppressLint("MissingPermission")
     fun zipcodeObservable(context: Context): Observable<String> {
         return Observable.fromCallable {
-            var zipcode: String
-            try {
+            val zipcode = try {
                 val locationManager = context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 val location = locationManager.getLastKnownLocation(locationManager.getBestProvider(Criteria(), false))
                 val geocoder = Geocoder(context, Locale.getDefault())
                 val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                zipcode = addresses.get(0).postalCode
+                addresses[0].postalCode
             } catch (e: Exception) {
                 val savedZipcode = loadZipcode(context)
-                zipcode = if (!TextUtils.isEmpty(savedZipcode)) savedZipcode else ERROR
+                if (!TextUtils.isEmpty(savedZipcode)) savedZipcode else ERROR
             }
             zipcode
         }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -59,7 +60,7 @@ class UserLocationManager private constructor() {
 
     fun loadZipcode(context: Context): String {
         initializePrefs(context)
-        return mSharedPrefs!!.getString(PREFS_KEY_ZIPCODE, "")
+        return mSharedPrefs!!.getString(PREFS_KEY_ZIPCODE, "") ?: ""
     }
 
     @SuppressLint("ApplySharedPref")

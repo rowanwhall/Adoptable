@@ -12,17 +12,17 @@ import rx.functions.Action1
  * Created by Rowan Hall
  */
 @ShelterScope
-@Component(modules = arrayOf(PetfinderApiModule::class, UserLocationModule::class), dependencies = arrayOf(AppComponent::class))
+@Component(modules = [PetfinderApiModule::class, UserLocationModule::class], dependencies = [AppComponent::class])
 interface ShelterComponent {
 
     fun inject(shelterFragment: ShelterFragment)
 
     companion object {
-        val injector: Action1<ShelterFragment> = Action1 { shelterFragment ->
+        val injector: Action1<ShelterFragment> = Action1 {
             DaggerShelterComponent.builder()
-                    .appComponent(App.Companion.applicationComponent(shelterFragment.context!!))
+                    .appComponent(App.applicationComponent(it.context!!))
                     .build()
-                    .inject(shelterFragment)
+                    .inject(it)
         }
     }
 
