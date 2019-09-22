@@ -14,11 +14,11 @@ class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresent
 
     private var mNetworkSubscription: Subscription? = null
     private lateinit var mLocation: String
-    private var shelterResource: Resource<ShelterViewState> = Resource.starting()
+    private var mShelterResource: Resource<ShelterViewState> = Resource.starting()
 
     fun initialLoad(context: Context, location: String) {
         mLocation = location
-        if (!shelterResource.hasData()) {
+        if (!mShelterResource.hasData()) {
             loadData(context, true)
         }
     }
@@ -28,28 +28,30 @@ class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresent
     }
 
     private fun loadData(context: Context, clear: Boolean) {
-        if (shelterResource.progress) return
+        if (mShelterResource.progress) return
 
-        mNetworkSubscription = mRepository.getShelters(mLocation, offset(), if (shelterResource.hasData()) shelterResource.data() else null, clear, context)
+        mNetworkSubscription = mRepository.getShelters(mLocation, nextPage(), if (mShelterResource.hasData()) mShelterResource.data() else null, clear, context)
                 .map { Resource.success(it) }
-                .startWith(Resource.progress(shelterResource))
+                .startWith(Resource.progress(mShelterResource))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                            shelterResource = it
+                            mShelterResource = it
                             publish()
                         }, {
-                            shelterResource = Resource.failure(shelterResource, it)
+                            mShelterResource = Resource.failure(mShelterResource, it)
                             publish()
                         })
 
     }
 
     fun paginate(context: Context) {
-        if (!shelterResource.progress
-                && shelterResource.hasData()
-                && !shelterResource.data().allLoaded) {
-            loadData(context, false)
+        if (!mShelterResource.progress
+                && mShelterResource.hasData()) {
+            val data = mShelterResource.data()
+            if (data.currentPage < data.totalPages) {
+                loadData(context, false)
+            }
         }
     }
 
@@ -61,8 +63,8 @@ class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresent
         mView?.onDirectionsButtonClicked(address)
     }
 
-    private fun offset(): String {
-        return if (shelterResource.hasData()) shelterResource.data().offset else "0"
+    private fun nextPage(): Int {
+        return if (mShelterResource.hasData()) mShelterResource.data().currentPage + 1 else 1
     }
 
     override fun publish() {
@@ -71,13 +73,13 @@ class ShelterPresenter(private var mRepository: ShelterRepository) : BasePresent
         }
 
         val view = mView!!
-        view.showProgress(shelterResource.progress)
-        if (shelterResource.hasData()) {
-            view.displayShelters(shelterResource.data().shelterData)
+        view.showProgress(mShelterResource.progress)
+        if (mShelterResource.hasData()) {
+            view.displayShelters(mShelterResource.data().shelterData)
         }
-        if (shelterResource.hasError()) {
-            view.showError(shelterResource.error().toString())
-            shelterResource = Resource.starting()
+        if (mShelterResource.hasError()) {
+            view.showError(mShelterResource.error().toString())
+            mShelterResource = Resource.starting()
         }
     }
 
