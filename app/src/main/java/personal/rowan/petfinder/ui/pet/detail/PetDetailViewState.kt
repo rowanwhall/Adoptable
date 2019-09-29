@@ -27,7 +27,7 @@ class PetDetailViewState : PetMasterListViewState, Parcelable {
         val addressStrings: MutableList<String?> = ArrayList()
         addressStrings.add(address.address1)
         addressStrings.add(address.address2)
-        addressStrings.add(context.getString(R.string.shelter_subtitle, address.address1, address.state, address.postcode))
+        addressStrings.add(context.getString(R.string.shelter_subtitle, address.city, address.state, address.postcode))
         mAddress = StringUtils.separateWithDelimiter(addressStrings, "\n")
         mPhotos = PetUtils.findLargePhotoUrls(animal.photos)
     }
