@@ -1,10 +1,7 @@
 package personal.rowan.petfinder.network
 
 import personal.rowan.petfinder.BuildConfig
-import personal.rowan.petfinder.model.AnimalsResponse
-import personal.rowan.petfinder.model.OAuthTokenBody
-import personal.rowan.petfinder.model.OAuthTokenResponse
-import personal.rowan.petfinder.model.OrganizationsResponse
+import personal.rowan.petfinder.model.*
 import retrofit2.Call
 import retrofit2.http.*
 import rx.Observable
@@ -34,6 +31,9 @@ interface Petfinder2Service {
     @GET("organizations")
     fun getOrganizations(@Query("location") location: String,
                          @Query("page") page: Int): Observable<OrganizationsResponse>
+
+    @GET("types/{type}/breeds")
+    fun getBreeds(@Path("type") type: String): Observable<BreedsResponse>
 
     companion object {
         const val BASE_URL = "https://api.petfinder.com/v2/"

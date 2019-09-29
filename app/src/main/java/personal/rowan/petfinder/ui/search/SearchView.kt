@@ -1,6 +1,6 @@
 package personal.rowan.petfinder.ui.search
 
-import personal.rowan.petfinder.model.pet.Breeds
+import personal.rowan.petfinder.model.BreedsResponse
 
 /**
  * Created by Rowan Hall
@@ -15,6 +15,6 @@ interface SearchView {
 
     fun displayBreedsLoadingError()
 
-    fun displayBreeds(breeds: Breeds)
+    fun displayBreeds(breeds: BreedsResponse)
 
 }

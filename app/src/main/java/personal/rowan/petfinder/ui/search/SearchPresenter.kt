@@ -2,7 +2,9 @@ package personal.rowan.petfinder.ui.search
 
 import android.text.TextUtils
 import personal.rowan.petfinder.application.Resource
+import personal.rowan.petfinder.model.BreedsResponse
 import personal.rowan.petfinder.model.pet.Breeds
+import personal.rowan.petfinder.network.Petfinder2Service
 import personal.rowan.petfinder.network.PetfinderService
 import personal.rowan.petfinder.ui.base.presenter.BasePresenter
 import rx.android.schedulers.AndroidSchedulers
@@ -12,10 +14,10 @@ import rx.subscriptions.CompositeSubscription
 /**
  * Created by Rowan Hall
  */
-class SearchPresenter(private var mPetfinderService: PetfinderService) : BasePresenter<SearchView>(SearchView::class.java) {
+class SearchPresenter(private var mPetfinderService: Petfinder2Service) : BasePresenter<SearchView>(SearchView::class.java) {
 
     private val mCompositeSubscription: CompositeSubscription = CompositeSubscription()
-    private var breedResource: Resource<Breeds> = Resource.starting()
+    private var breedResource: Resource<BreedsResponse> = Resource.starting()
 
     fun loadBreeds(animal: String?) {
         if (TextUtils.isEmpty(animal)) {
@@ -23,8 +25,8 @@ class SearchPresenter(private var mPetfinderService: PetfinderService) : BasePre
             return
         }
 
-        mCompositeSubscription.add(mPetfinderService.getBreedList(animal!!)
-                .map { Resource.success(it.petfinder?.breeds!!) }
+        mCompositeSubscription.add(mPetfinderService.getBreeds(animal!!)
+                .map { Resource.success(it) }
                 .startWith(Resource.progress(breedResource))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

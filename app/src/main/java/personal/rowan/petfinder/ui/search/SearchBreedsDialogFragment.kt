@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import personal.rowan.petfinder.R
-import personal.rowan.petfinder.model.pet.Breeds
+import personal.rowan.petfinder.model.BreedsResponse
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -21,12 +21,12 @@ class SearchBreedsDialogFragment : DialogFragment() {
 
         private const val ARG_BREED_LIST = "SearchBreedsDialog.Arg.BreedList"
 
-        fun newInstance(breeds: Breeds): SearchBreedsDialogFragment {
+        fun newInstance(breedsResponse: BreedsResponse): SearchBreedsDialogFragment {
             val searchBreedsDialogFragment = SearchBreedsDialogFragment()
             val args = Bundle()
             val breedList = ArrayList<String>()
-            for (breed in breeds.breed) {
-                breedList.add(breed.`$t`!!)
+            for (breed in breedsResponse.breeds) {
+                breedList.add(breed.name)
             }
             args.putStringArrayList(ARG_BREED_LIST, breedList)
             searchBreedsDialogFragment.arguments = args

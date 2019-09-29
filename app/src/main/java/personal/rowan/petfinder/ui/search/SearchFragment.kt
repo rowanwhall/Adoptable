@@ -20,7 +20,7 @@ import android.widget.RadioButton
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
 import personal.rowan.petfinder.R
-import personal.rowan.petfinder.model.pet.Breeds
+import personal.rowan.petfinder.model.BreedsResponse
 import personal.rowan.petfinder.ui.base.presenter.BasePresenterFragment
 import personal.rowan.petfinder.ui.base.presenter.PresenterFactory
 import personal.rowan.petfinder.ui.pet.master.search.PetMasterSearchContainerActivity
@@ -116,7 +116,7 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
         showToastMessage(getString(R.string.search_breed_empty_animal_error))
     }
 
-    override fun displayBreeds(breeds: Breeds) {
+    override fun displayBreeds(breeds: BreedsResponse) {
         val breedsDialog = SearchBreedsDialogFragment.newInstance(breeds)
         breedsDialog.show(childFragmentManager, TAG_BREED_DIALOG)
         mDialogSubscription?.unsubscribe()
