@@ -2,7 +2,6 @@ package personal.rowan.petfinder.ui.shelter
 
 import android.content.Context
 import personal.rowan.petfinder.network.Petfinder2Service
-import personal.rowan.petfinder.network.PetfinderService
 import personal.rowan.petfinder.ui.shelter.dagger.ShelterScope
 import rx.Observable
 import javax.inject.Inject

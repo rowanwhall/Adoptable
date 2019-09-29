@@ -18,6 +18,7 @@ abstract class BasePresenterActivity<P : BasePresenter<V>, V: Any> : BaseActivit
         super.onCreate(savedInstanceState)
 
         beforePresenterPrepared()
+        @Suppress("DEPRECATION")
         supportLoaderManager.initLoader(loaderId(), null, object : LoaderManager.LoaderCallbacks<P> {
             override fun onCreateLoader(id: Int, args: Bundle?): Loader<P> {
                 return PresenterLoader(this@BasePresenterActivity, presenterFactory)
@@ -57,7 +58,7 @@ abstract class BasePresenterActivity<P : BasePresenter<V>, V: Any> : BaseActivit
      * Hook for subclasses for before the [BasePresenter] is instantiated.
      * Primarily used to construct or inject dependencies for the Presenter.
      */
-    open protected fun beforePresenterPrepared() {
+    protected open fun beforePresenterPrepared() {
 
     }
 
@@ -65,14 +66,14 @@ abstract class BasePresenterActivity<P : BasePresenter<V>, V: Any> : BaseActivit
      * Hook for subclasses that deliver the [BasePresenter] before its View is attached.
      * Can be use to initialize the Presenter or simply hold a reference to it.
      */
-    open protected fun onPresenterPrepared(presenter: P) {
+    protected open fun onPresenterPrepared(presenter: P) {
 
     }
 
     /**
      * Hook for subclasses before the screen gets destroyed.
      */
-    open protected fun onPresenterDestroyed() {
+    protected open fun onPresenterDestroyed() {
 
     }
 

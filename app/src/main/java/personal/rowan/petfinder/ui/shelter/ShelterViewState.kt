@@ -1,10 +1,7 @@
 package personal.rowan.petfinder.ui.shelter
 
 import android.content.Context
-import personal.rowan.petfinder.model.Organization
-import personal.rowan.petfinder.model.OrganizationsResponse
-import personal.rowan.petfinder.model.shelter.Shelter
-import personal.rowan.petfinder.model.shelter.ShelterResult
+import personal.rowan.petfinder.network.OrganizationsResponse
 
 /**
  * Created by Rowan Hall

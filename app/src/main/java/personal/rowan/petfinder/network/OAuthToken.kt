@@ -1,4 +1,4 @@
-package personal.rowan.petfinder.model
+package personal.rowan.petfinder.network
 
 import com.google.gson.annotations.SerializedName
 import personal.rowan.petfinder.network.Petfinder2Service

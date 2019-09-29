@@ -3,7 +3,7 @@ package personal.rowan.petfinder.ui.shelter
 import android.content.Context
 import android.text.TextUtils
 import personal.rowan.petfinder.R
-import personal.rowan.petfinder.model.Organization
+import personal.rowan.petfinder.network.Organization
 import personal.rowan.petfinder.util.StringUtils
 import java.util.*
 

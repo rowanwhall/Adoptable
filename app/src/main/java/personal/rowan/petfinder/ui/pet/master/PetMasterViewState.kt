@@ -2,9 +2,7 @@ package personal.rowan.petfinder.ui.pet.master
 
 import android.content.Context
 import io.realm.Realm
-import personal.rowan.petfinder.model.AnimalsResponse
-import personal.rowan.petfinder.model.pet.Pet
-import personal.rowan.petfinder.model.pet.PetResult
+import personal.rowan.petfinder.network.AnimalsResponse
 import personal.rowan.petfinder.ui.pet.detail.PetDetailViewState
 import personal.rowan.petfinder.ui.pet.master.favorite.RealmFavoritesManager
 

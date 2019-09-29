@@ -1,6 +1,6 @@
 package personal.rowan.petfinder.util
 
-import personal.rowan.petfinder.model.Photo
+import personal.rowan.petfinder.network.Photo
 import java.net.URLDecoder
 
 /**

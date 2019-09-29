@@ -7,13 +7,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import okhttp3.*
-import personal.rowan.petfinder.model.pet.Breeds
-import personal.rowan.petfinder.model.pet.Options
-import personal.rowan.petfinder.network.BreedsTypeAdapter
-import personal.rowan.petfinder.network.OptionsTypeAdapter
+import okhttp3.OkHttpClient
 import personal.rowan.petfinder.network.Petfinder2Service
-import personal.rowan.petfinder.network.PetfinderService
 import personal.rowan.petfinder.util.RetrofitServiceFactory
 
 /**
@@ -22,27 +17,6 @@ import personal.rowan.petfinder.util.RetrofitServiceFactory
 
 @Module
 class PetfinderApiModule(private val context: Context) {
-
-    private val petfinderHttpClient = OkHttpClient.Builder()
-            .addInterceptor {
-                val original = it.request()
-                val originalHttpUrl = original.url()
-
-                val url = originalHttpUrl.newBuilder()
-                        .addQueryParameter("key", PetfinderService.API_KEY)
-                        .addQueryParameter("format", "json")
-                        .build()
-
-                val request = original.newBuilder().url(url).build()
-                it.proceed(request)
-            }
-            .build()
-
-    private val petfinderGson = GsonBuilder()
-            //.registerTypeAdapter(Pets::class.java, PetsTypeAdapter())
-            .registerTypeAdapter(Breeds::class.java, BreedsTypeAdapter())
-            .registerTypeAdapter(Options::class.java, OptionsTypeAdapter())
-            .create()
 
     private val petfinder2HttpClient = OkHttpClient.Builder()
             .authenticator { _, response ->
@@ -66,11 +40,6 @@ class PetfinderApiModule(private val context: Context) {
             .build()
 
     private val petfinder2Gson = GsonBuilder().create()
-
-    @Provides
-    fun providePetfinderService(): PetfinderService {
-        return RetrofitServiceFactory.createRetrofitService(PetfinderService::class.java, PetfinderService.BASE_URL, petfinderHttpClient, petfinderGson)
-    }
 
     @Provides
     fun providePetfinder2Service(): Petfinder2Service {

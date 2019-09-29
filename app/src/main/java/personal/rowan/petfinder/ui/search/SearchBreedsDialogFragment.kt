@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import personal.rowan.petfinder.R
-import personal.rowan.petfinder.model.BreedsResponse
+import personal.rowan.petfinder.network.BreedsResponse
 import rx.Observable
 import rx.subjects.PublishSubject
 

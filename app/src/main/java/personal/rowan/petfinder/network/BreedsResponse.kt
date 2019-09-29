@@ -1,4 +1,4 @@
-package personal.rowan.petfinder.model
+package personal.rowan.petfinder.network
 
 /**
  * Created by Rowan Hall

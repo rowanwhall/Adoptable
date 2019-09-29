@@ -20,7 +20,7 @@ import android.widget.RadioButton
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
 import personal.rowan.petfinder.R
-import personal.rowan.petfinder.model.BreedsResponse
+import personal.rowan.petfinder.network.BreedsResponse
 import personal.rowan.petfinder.ui.base.presenter.BasePresenterFragment
 import personal.rowan.petfinder.ui.base.presenter.PresenterFactory
 import personal.rowan.petfinder.ui.pet.master.search.PetMasterSearchContainerActivity

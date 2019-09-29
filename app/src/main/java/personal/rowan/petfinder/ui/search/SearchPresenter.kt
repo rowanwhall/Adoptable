@@ -2,10 +2,8 @@ package personal.rowan.petfinder.ui.search
 
 import android.text.TextUtils
 import personal.rowan.petfinder.application.Resource
-import personal.rowan.petfinder.model.BreedsResponse
-import personal.rowan.petfinder.model.pet.Breeds
+import personal.rowan.petfinder.network.BreedsResponse
 import personal.rowan.petfinder.network.Petfinder2Service
-import personal.rowan.petfinder.network.PetfinderService
 import personal.rowan.petfinder.ui.base.presenter.BasePresenter
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers

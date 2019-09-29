@@ -4,8 +4,7 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import personal.rowan.petfinder.R
-import personal.rowan.petfinder.model.Animal
-import personal.rowan.petfinder.model.pet.Pet
+import personal.rowan.petfinder.network.Animal
 import personal.rowan.petfinder.util.PetUtils
 import personal.rowan.petfinder.util.StringUtils
 

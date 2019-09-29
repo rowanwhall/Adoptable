@@ -1,7 +1,7 @@
 package personal.rowan.petfinder.ui.pet.master
 
 import android.content.Context
-import personal.rowan.petfinder.model.AnimalsResponse
+import personal.rowan.petfinder.network.AnimalsResponse
 import personal.rowan.petfinder.network.Petfinder2Service
 import personal.rowan.petfinder.ui.pet.master.dagger.PetMasterScope
 import personal.rowan.petfinder.ui.pet.master.favorite.RealmFavoritesManager

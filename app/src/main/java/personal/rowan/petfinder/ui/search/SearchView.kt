@@ -1,6 +1,6 @@
 package personal.rowan.petfinder.ui.search
 
-import personal.rowan.petfinder.model.BreedsResponse
+import personal.rowan.petfinder.network.BreedsResponse
 
 /**
  * Created by Rowan Hall

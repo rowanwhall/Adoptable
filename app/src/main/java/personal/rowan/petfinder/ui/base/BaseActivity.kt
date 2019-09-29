@@ -1,6 +1,7 @@
 package personal.rowan.petfinder.ui.base
 
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -13,6 +14,7 @@ import android.widget.Toast
 
 abstract class BaseActivity : AppCompatActivity() {
 
+    @Suppress("DEPRECATION")
     private var mProgressDialog: ProgressDialog? = null
 
     fun showToastMessage(message: String) {
@@ -20,6 +22,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun showProgressDialog(title: String, message: String) {
+        @Suppress("DEPRECATION")
         mProgressDialog = ProgressDialog.show(this, title, message, true)
     }
 
@@ -38,6 +41,7 @@ abstract class BaseActivity : AppCompatActivity() {
         dismissProgressDialog()
     }
 
+    @SuppressLint("RestrictedApi")
     @JvmOverloads fun setToolbar(toolbar: Toolbar, title: String, setUpButton: Boolean = false) {
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
@@ -49,7 +53,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     // Override this method for specific onUpPressed behavior
-    protected fun onUpPressed() {
+    protected open fun onUpPressed() {
         onBackPressed()
     }
 

@@ -1,7 +1,6 @@
 package personal.rowan.petfinder.network
 
 import personal.rowan.petfinder.BuildConfig
-import personal.rowan.petfinder.model.*
 import retrofit2.Call
 import retrofit2.http.*
 import rx.Observable
