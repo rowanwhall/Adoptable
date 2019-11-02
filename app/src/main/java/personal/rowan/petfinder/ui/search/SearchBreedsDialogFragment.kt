@@ -40,7 +40,7 @@ class SearchBreedsDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBreeds = arguments!!.getStringArrayList(ARG_BREED_LIST)
+        mBreeds = arguments!!.getStringArrayList(ARG_BREED_LIST)!!
     }
 
     @SuppressLint("InflateParams")

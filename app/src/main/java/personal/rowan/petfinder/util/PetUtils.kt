@@ -35,20 +35,20 @@ object PetUtils {
 
     fun searchSizeByIndex(index: Int): String? {
         return when(index) {
-            1 -> "S"
-            2 -> "M"
-            3 -> "L"
-            4 -> "XL"
+            1 -> "small"
+            2 -> "medium"
+            3 -> "large"
+            4 -> "xlarge"
             else -> null
         }
     }
 
     fun searchAgeByIndex(index: Int): String? {
         return when(index) {
-            1 -> "Baby"
-            2 -> "Young"
-            3 -> "Adult"
-            4 -> "Senior"
+            1 -> "baby"
+            2 -> "young"
+            3 -> "adult"
+            4 -> "senior"
             else -> null
         }
     }

@@ -132,7 +132,7 @@ class SearchFragment : BasePresenterFragment<SearchPresenter, SearchView>(), Sea
         val animal = PetUtils.searchAnimalByIndex(animalView.selectedItemPosition)
         val size = PetUtils.searchSizeByIndex(sizeView.selectedItemPosition)
         val age = PetUtils.searchAgeByIndex(ageView.selectedItemPosition)
-        val sex = if(maleSexView.isChecked) "M" else if(femaleSexView.isChecked) "F" else null
+        val sex = if(maleSexView.isChecked) "male" else if(femaleSexView.isChecked) "female" else null
         val breedText = breedButton.text.toString()
         val breed = if(breedText == getString(R.string.search_breed_defaut)) null else breedText
         startActivity(PetMasterSearchContainerActivity.newIntent(context!!, location, animal, size, age, sex, breed))
