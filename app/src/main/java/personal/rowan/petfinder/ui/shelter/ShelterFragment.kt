@@ -95,19 +95,19 @@ class ShelterFragment : BasePresenterFragment<ShelterPresenter, ShelterView>(), 
 
     override fun onPresenterPrepared(presenter: ShelterPresenter) {
         mPresenter = presenter
-        setupRecyclerWithZipcode(mUserLocationManager.loadZipcode(context!!))
+        setupRecyclerWithLocation(mUserLocationManager.loadSavedLocation(context!!))
     }
 
-    private fun setupRecyclerWithZipcode(zipcode: String) {
+    private fun setupRecyclerWithLocation(location: String) {
         dismissProgressDialog()
-        if (TextUtils.isEmpty(zipcode) || zipcode == UserLocationManager.ERROR) {
+        if (TextUtils.isEmpty(location) || location == UserLocationManager.ERROR) {
             startActivity(LocationActivity.newIntent(context!!).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             return
         }
 
         val context = context
         if (context != null) {
-            mPresenter.initialLoad(context, zipcode)
+            mPresenter.initialLoad(context, location)
         }
     }
 

@@ -3,13 +3,10 @@ package personal.rowan.petfinder.application
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.location.*
 import android.text.TextUtils
+import com.google.android.gms.location.LocationServices
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
-import java.util.*
 import javax.inject.Singleton
 
 /**
@@ -27,7 +24,7 @@ class UserLocationManager private constructor() {
         val INSTANCE: UserLocationManager by lazy { Holder.INSTANCE }
         const val ERROR = "ERROR"
         const val PREFS_NAME = "PREFS_NAME"
-        const val PREFS_KEY_ZIPCODE = "ZIPCODE"
+        const val PREFS_KEY_LOCATION = "ZIPCODE"
     }
 
     private var mSharedPrefs: SharedPreferences? = null
@@ -41,32 +38,24 @@ class UserLocationManager private constructor() {
         return mPermissionSubject
     }
 
-    @SuppressLint("MissingPermission")
-    fun zipcodeObservable(context: Context): Observable<String> {
-        return Observable.fromCallable {
-            val zipcode = try {
-                val locationManager = context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                val location = locationManager.getLastKnownLocation(locationManager.getBestProvider(Criteria(), false))
-                val geocoder = Geocoder(context, Locale.getDefault())
-                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                addresses[0].postalCode
-            } catch (e: Exception) {
-                val savedZipcode = loadZipcode(context)
-                if (!TextUtils.isEmpty(savedZipcode)) savedZipcode else ERROR
-            }
-            zipcode
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    fun getLocation(context: Context, onSuccess: (String) -> Unit, onFailure: () -> Unit) {
+        LocationServices.getFusedLocationProviderClient(context).lastLocation.addOnSuccessListener {
+            onSuccess(it.latitude.toString() + "," + it.longitude.toString())
+        }.addOnFailureListener {
+            val savedLocation = loadSavedLocation(context)
+            if (!TextUtils.isEmpty(savedLocation)) onSuccess(savedLocation) else onFailure()
+        }
     }
 
-    fun loadZipcode(context: Context): String {
+    fun loadSavedLocation(context: Context): String {
         initializePrefs(context)
-        return mSharedPrefs!!.getString(PREFS_KEY_ZIPCODE, "") ?: ""
+        return mSharedPrefs!!.getString(PREFS_KEY_LOCATION, "") ?: ""
     }
 
     @SuppressLint("ApplySharedPref")
-    fun saveZipcode(context: Context, zipcode: String) {
+    fun saveLocation(context: Context, zipcode: String) {
         initializePrefs(context)
-        mSharedPrefs?.edit()?.putString(PREFS_KEY_ZIPCODE, zipcode)?.commit()
+        mSharedPrefs?.edit()?.putString(PREFS_KEY_LOCATION, zipcode)?.commit()
     }
 
     private fun initializePrefs(context: Context) {

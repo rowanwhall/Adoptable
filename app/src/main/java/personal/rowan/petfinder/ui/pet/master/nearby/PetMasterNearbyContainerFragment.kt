@@ -47,16 +47,16 @@ class PetMasterNearbyContainerFragment : BaseFragment() {
 
         PetMasterNearbyContainerComponent.injector.call(this)
         setToolbar(toolbar, getString(R.string.pet_master_nearby_container_title))
-        setupViewPagerWithZipcode(mUserLocationManager.loadZipcode(context!!))
+        setupViewPagerWithLocation(mUserLocationManager.loadSavedLocation(context!!))
     }
 
-    private fun setupViewPagerWithZipcode(zipcode: String) {
-        if (TextUtils.isEmpty(zipcode) || zipcode == UserLocationManager.ERROR) {
+    private fun setupViewPagerWithLocation(location: String) {
+        if (TextUtils.isEmpty(location) || location == UserLocationManager.ERROR) {
             startActivity(LocationActivity.newIntent(context!!).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             return
         }
         if (viewPager.adapter == null) {
-            viewPager.adapter = PetMasterNearbyContainerAdapter(childFragmentManager, context!!, zipcode)
+            viewPager.adapter = PetMasterNearbyContainerAdapter(childFragmentManager, context!!, location)
         }
         viewPager.offscreenPageLimit = PetMasterNearbyContainerAdapter.NUM_PAGES
         tabLayout.setupWithViewPager(viewPager)

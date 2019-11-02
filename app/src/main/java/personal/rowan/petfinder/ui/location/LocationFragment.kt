@@ -67,7 +67,7 @@ class LocationFragment : BaseFragment() {
         locationPermissionButton = view.findViewById(R.id.location_permission_button)
 
         locationPermissionButton.setOnClickListener { requestLocationPermission() }
-        locationFailureButton.setOnClickListener { findZipcode() }
+        locationFailureButton.setOnClickListener { findLocation() }
         zipcodeEntry.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
 
@@ -87,7 +87,7 @@ class LocationFragment : BaseFragment() {
             AndroidUtils.hideKeyboard(context!!, zipcodeEntry)
         }
 
-        showLocationPermissionOrFindZipcode()
+        showLocationPermissionOrFindLocation()
     }
 
     override fun onDestroyView() {
@@ -102,16 +102,16 @@ class LocationFragment : BaseFragment() {
         }
     }
 
-    private fun showLocationPermissionOrFindZipcode() {
+    private fun showLocationPermissionOrFindLocation() {
         mCompositeSubscription.add(mUserLocationManager.permissionObservable()
-                .subscribe ({ if(it) findZipcode() else showLocationPermissionButton() }, { showLocationFailure() }))
+                .subscribe ({ if(it) findLocation() else showLocationPermissionButton() }, { showLocationFailure() }))
 
         if(!PermissionUtils.hasPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestLocationPermission()
             return
         }
 
-        findZipcode()
+        findLocation()
     }
 
     private fun showLocationPermissionButton() {
@@ -128,9 +128,8 @@ class LocationFragment : BaseFragment() {
         requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PermissionUtils.PERMISSION_CODE_LOCATION)
     }
 
-    private fun findZipcode() {
-        mCompositeSubscription.add(mUserLocationManager.zipcodeObservable(context!!)
-                        .subscribe({ proceedToMainActivity(it) }, { showLocationFailure() }))
+    private fun findLocation() {
+        mUserLocationManager.getLocation(context!!, { proceedToMainActivity(it) }, { showLocationFailure() })
     }
 
     private fun proceedToMainActivity(zipcode: String) {
@@ -138,7 +137,7 @@ class LocationFragment : BaseFragment() {
             showLocationFailure()
             return
         }
-        mUserLocationManager.saveZipcode(context!!, zipcode)
+        mUserLocationManager.saveLocation(context!!, zipcode)
         startActivity(MainActivity.createIntent(context!!).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
         activity?.finish()
     }
