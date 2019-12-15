@@ -36,6 +36,8 @@ class PetMasterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         if (!photoUrl.isBlank()) {
             Picasso.with(photoView.context)
                     .load(listViewState.photoUrl())
+                    .fit()
+                    .centerCrop()
                     .into(photoView)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
