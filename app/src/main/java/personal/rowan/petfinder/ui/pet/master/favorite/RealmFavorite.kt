@@ -11,18 +11,20 @@ import java.util.*
  * Created by Rowan Hall
  */
 open class RealmFavorite(@PrimaryKey private var mId: String,
-                    private var mPhotoUrl: String,
-                    private var mName: String,
-                    private var mHeader: String,
-                    private var mDetail: String,
-                    private var mFavorite: Boolean,
-                    private var mDescription: String,
-                    private var mPhone: String,
-                    private var mEmail: String,
-                    private var mAddress: String,
-                    private var mPhotos: RealmList<RealmString>): RealmObject() {
+                         private var mPhotoUrl: String,
+                         private var mName: String,
+                         private var mHeader: String,
+                         private var mDetail: String,
+                         private var mFavorite: Boolean,
+                         private var mDescription: String,
+                         private var mPhone: String,
+                         private var mEmail: String,
+                         private var mAddress: String,
+                         private var mAttributes: String,
+                         private var mEnvironment: String,
+                         private var mPhotos: RealmList<RealmString>) : RealmObject() {
 
-    constructor() : this("", "", "", "", "", false, "", "", "", "", RealmList())
+    constructor() : this("", "", "", "", "", false, "", "", "", "", "", "", RealmList())
 
     companion object {
 
@@ -37,12 +39,14 @@ open class RealmFavorite(@PrimaryKey private var mId: String,
                     viewState.phone(),
                     viewState.email(),
                     viewState.address(),
+                    viewState.attributes(),
+                    viewState.environment(),
                     RealmString.toRealmStringList(viewState.photos()))
         }
 
         fun toViewModel(favorites: List<RealmFavorite>): MutableList<PetDetailViewState> {
             val viewModels: MutableList<PetDetailViewState> = ArrayList()
-            for(favorite in favorites) {
+            for (favorite in favorites) {
                 viewModels.add(PetDetailViewState(favorite.id(),
                         favorite.photoUrl(),
                         favorite.name(),
@@ -53,6 +57,8 @@ open class RealmFavorite(@PrimaryKey private var mId: String,
                         favorite.phone(),
                         favorite.email(),
                         favorite.address(),
+                        favorite.attributes(),
+                        favorite.environment(),
                         RealmString.toStringList(favorite.photos())))
             }
             return viewModels
@@ -94,6 +100,14 @@ open class RealmFavorite(@PrimaryKey private var mId: String,
 
     fun address(): String {
         return StringUtils.emptyIfNull(mAddress)
+    }
+
+    fun attributes(): String {
+        return StringUtils.emptyIfNull(mAttributes)
+    }
+
+    fun environment(): String {
+        return StringUtils.emptyIfNull(mEnvironment)
     }
 
     fun email(): String {

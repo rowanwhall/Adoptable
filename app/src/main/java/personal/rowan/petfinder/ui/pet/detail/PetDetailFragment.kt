@@ -32,6 +32,10 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
     private lateinit var photoView: ImageView
     private lateinit var headerView: TextView
     private lateinit var detailView: TextView
+    private lateinit var attributesView: TextView
+    private lateinit var attributesDivider: View
+    private lateinit var environmentView: TextView
+    private lateinit var environmentDivider: View
     private lateinit var descriptionView: TextView
     private lateinit var descriptionDivider: View
     private lateinit var phoneView: TextView
@@ -72,6 +76,10 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
         photoView = view.findViewById(R.id.pet_detail_photo)
         headerView = view.findViewById(R.id.pet_detail_header)
         detailView = view.findViewById(R.id.pet_detail_detail)
+        attributesView = view.findViewById(R.id.pet_detail_attributes)
+        attributesDivider = view.findViewById(R.id.pet_detail_attributes_divider)
+        environmentView = view.findViewById(R.id.pet_detail_environment)
+        environmentDivider = view.findViewById(R.id.pet_detail_environment_divider)
         descriptionView = view.findViewById(R.id.pet_detail_description)
         descriptionDivider = view.findViewById(R.id.pet_detail_description_divider)
         phoneView = view.findViewById(R.id.pet_detail_phone)
@@ -111,6 +119,8 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
         headerView.text = viewState.header()
         detailView.text = viewState.detail()
 
+        handleAttributes(viewState.attributes())
+        handleEnvironment(viewState.environment())
         handleDescription(viewState.description())
         handlePhone(viewState.phone())
         handleEmail(viewState.email())
@@ -138,8 +148,26 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
         }
     }
 
+    private fun handleAttributes(attributes: String) {
+        if (attributes.isBlank()) {
+            attributesDivider.visibility = View.GONE
+            attributesView.visibility = View.GONE
+        } else {
+            attributesView.text = attributes
+        }
+    }
+
+    private fun handleEnvironment(environment: String) {
+        if (environment.isBlank()) {
+            environmentDivider.visibility = View.GONE
+            environmentView.visibility = View.GONE
+        } else {
+            environmentView.text = environment
+        }
+    }
+
     private fun handleDescription(description: String) {
-        if (description.trim().isEmpty()) {
+        if (description.isBlank()) {
             descriptionDivider.visibility = View.GONE
             descriptionView.visibility = View.GONE
         } else {

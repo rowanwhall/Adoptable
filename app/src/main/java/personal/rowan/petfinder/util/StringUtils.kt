@@ -8,7 +8,7 @@ import android.text.TextUtils
 object StringUtils {
 
     fun emptyIfNull(string: String?): String {
-        return if (string == null) "" else string
+        return string ?: ""
     }
 
     fun nullIfEmpty(string: String?): String? {
@@ -17,7 +17,7 @@ object StringUtils {
 
     fun separateWithDelimiter(strings: List<String?>, delimiter: String): String {
         val stringBuilder = StringBuilder()
-        for (i in 0..strings.size - 1) {
+        for (i in strings.indices) {
             val string: String? = strings.get(i)
             if (!TextUtils.isEmpty(string) && !string.equals("null")) {
                 stringBuilder.append(string)

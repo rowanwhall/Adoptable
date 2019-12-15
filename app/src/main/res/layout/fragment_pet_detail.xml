@@ -98,6 +98,38 @@
                 tools:text="Extra Large - Adult - Female - Nashville, TN"/>
 
             <View
+                android:id="@+id/pet_detail_attributes_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightGray"/>
+
+            <TextView
+                android:id="@+id/pet_detail_attributes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:textColor="@color/textColorPrimaryLight"
+                android:textSize="14sp"
+                android:textIsSelectable="true"
+                tools:text="Fixed - House Trained - Special Needs - Current Shots"/>
+
+            <View
+                android:id="@+id/pet_detail_environment_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightGray"/>
+
+            <TextView
+                android:id="@+id/pet_detail_environment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:textColor="@color/textColorPrimaryLight"
+                android:textSize="14sp"
+                android:textIsSelectable="true"
+                tools:text="Good with children, dogs, cats"/>
+
+            <View
                 android:id="@+id/pet_detail_description_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
