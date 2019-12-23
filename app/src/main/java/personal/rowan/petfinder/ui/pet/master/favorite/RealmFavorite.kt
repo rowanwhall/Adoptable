@@ -20,11 +20,10 @@ open class RealmFavorite(@PrimaryKey private var mId: String,
                          private var mPhone: String,
                          private var mEmail: String,
                          private var mAddress: String,
-                         private var mAttributes: String,
                          private var mEnvironment: String,
                          private var mPhotos: RealmList<RealmString>) : RealmObject() {
 
-    constructor() : this("", "", "", "", "", false, "", "", "", "", "", "", RealmList())
+    constructor() : this("", "", "", "", "", false, "", "", "", "", "", RealmList())
 
     companion object {
 
@@ -39,7 +38,6 @@ open class RealmFavorite(@PrimaryKey private var mId: String,
                     viewState.phone(),
                     viewState.email(),
                     viewState.address(),
-                    viewState.attributes(),
                     viewState.environment(),
                     RealmString.toRealmStringList(viewState.photos()))
         }
@@ -57,7 +55,6 @@ open class RealmFavorite(@PrimaryKey private var mId: String,
                         favorite.phone(),
                         favorite.email(),
                         favorite.address(),
-                        favorite.attributes(),
                         favorite.environment(),
                         RealmString.toStringList(favorite.photos())))
             }
@@ -100,10 +97,6 @@ open class RealmFavorite(@PrimaryKey private var mId: String,
 
     fun address(): String {
         return StringUtils.emptyIfNull(mAddress)
-    }
-
-    fun attributes(): String {
-        return StringUtils.emptyIfNull(mAttributes)
     }
 
     fun environment(): String {

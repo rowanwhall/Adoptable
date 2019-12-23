@@ -18,7 +18,7 @@ open class PetMasterListViewState : Parcelable {
         mPhotoUrl = PetUtils.findFirstLargePhotoUrl(animal.photos)
         mName = animal.name
         mHeader = context.getString(R.string.pet_master_header, animal.type, animal.breeds.primary)
-        mDetail = context.getString(R.string.pet_master_detail, animal.size, animal.age, animal.gender, animal.contact.address.city, animal.contact.address.state)
+        mDetail = PetUtils.petDetail(context, animal)
         mFavorite = favorite
     }
 

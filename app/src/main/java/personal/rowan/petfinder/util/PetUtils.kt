@@ -1,5 +1,8 @@
 package personal.rowan.petfinder.util
 
+import android.content.Context
+import personal.rowan.petfinder.R
+import personal.rowan.petfinder.network.Animal
 import personal.rowan.petfinder.network.Photo
 import java.net.URLDecoder
 
@@ -51,6 +54,41 @@ object PetUtils {
             4 -> "senior"
             else -> null
         }
+    }
+
+    fun petDetail(context: Context, animal: Animal): String {
+        val detailList = mutableListOf(animal.size, animal.age, animal.gender, animal.contact.address.city + ", " + animal.contact.address.state)
+        val attributes = animal.attributes
+        if (attributes.spayedNeutered) {
+            detailList.add(context.getString(R.string.pet_detail_fixed))
+        }
+        if (attributes.houseTrained) {
+            detailList.add(context.getString(R.string.pet_detail_house_trained))
+        }
+        if (attributes.specialNeeds) {
+            detailList.add(context.getString(R.string.pet_detail_special_needs))
+        }
+        if (attributes.shotsCurrent) {
+            detailList.add(context.getString(R.string.pet_detail_shots))
+        }
+        return StringUtils.separateWithDelimiter(detailList, " - ")
+    }
+
+    fun petEnvironment(context: Context, animal: Animal): String? {
+        val environment = animal.environment
+        val goodWith = mutableListOf<String>()
+        if (environment.children == true) {
+            goodWith.add(context.getString(R.string.pet_detail_environment_children))
+        }
+        if (environment.dogs == true) {
+            goodWith.add(context.getString(R.string.pet_detail_environment_dogs))
+        }
+        if (environment.cats == true) {
+            goodWith.add(context.getString(R.string.pet_detail_environment_cats))
+        }
+        return if (goodWith.isNotEmpty())
+            context.getString(R.string.pet_detail_environment, StringUtils.separateWithDelimiter(goodWith, ", ")) else
+            null
     }
 
     fun findFirstLargePhotoUrl(photos: List<Photo>): String? {

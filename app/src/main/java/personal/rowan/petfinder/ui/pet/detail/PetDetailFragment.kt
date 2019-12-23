@@ -32,8 +32,6 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
     private lateinit var photoView: ImageView
     private lateinit var headerView: TextView
     private lateinit var detailView: TextView
-    private lateinit var attributesView: TextView
-    private lateinit var attributesDivider: View
     private lateinit var environmentView: TextView
     private lateinit var environmentDivider: View
     private lateinit var descriptionView: TextView
@@ -76,8 +74,6 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
         photoView = view.findViewById(R.id.pet_detail_photo)
         headerView = view.findViewById(R.id.pet_detail_header)
         detailView = view.findViewById(R.id.pet_detail_detail)
-        attributesView = view.findViewById(R.id.pet_detail_attributes)
-        attributesDivider = view.findViewById(R.id.pet_detail_attributes_divider)
         environmentView = view.findViewById(R.id.pet_detail_environment)
         environmentDivider = view.findViewById(R.id.pet_detail_environment_divider)
         descriptionView = view.findViewById(R.id.pet_detail_description)
@@ -119,7 +115,6 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
         headerView.text = viewState.header()
         detailView.text = viewState.detail()
 
-        handleAttributes(viewState.attributes())
         handleEnvironment(viewState.environment())
         handleDescription(viewState.description())
         handlePhone(viewState.phone())
@@ -145,15 +140,6 @@ class PetDetailFragment : BasePresenterFragment<PetDetailPresenter, PetDetailVie
                 startActivity(PetDetailPhotosActivity.createIntent(context!!, allPhotosArrayList),
                         ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, Pair.create(photoView, transition)).toBundle())
             }
-        }
-    }
-
-    private fun handleAttributes(attributes: String) {
-        if (attributes.isBlank()) {
-            attributesDivider.visibility = View.GONE
-            attributesView.visibility = View.GONE
-        } else {
-            attributesView.text = attributes
         }
     }
 
