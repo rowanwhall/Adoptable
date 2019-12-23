@@ -30,7 +30,7 @@ class PetMasterShelterArguments (private val mShelterId: String, private val mSt
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(mShelterId)
-        dest?.writeByte(mStatus.toByte())
+        dest?.writeString(mStatus)
     }
 
 }

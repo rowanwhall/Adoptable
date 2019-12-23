@@ -149,7 +149,8 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
     }
 
     override fun onPetClicked(petMasterClickData: PetMasterViewHolder.PetMasterClickData) {
-        // Add status and navigation bars to shared element transition to prevent overlap
+        // todo: Work on smoother shared element transition
+        /*// Add status and navigation bars to shared element transition to prevent overlap
         val activity = activity
         val navigationBar = activity?.findViewById<View>(android.R.id.navigationBarBackground)
         // Devices with physical buttons (i.e. Samsung) will return a null navigation bar
@@ -158,9 +159,9 @@ class PetMasterFragment : BasePresenterFragment<PetMasterPresenter, PetMasterVie
                     arrayOf(Pair.create(activity.findViewById(android.R.id.statusBarBackground), Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME),
                             Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME))
                 else
-                    arrayOf(Pair.create(activity?.findViewById(android.R.id.statusBarBackground), Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME))
-        startActivity(PetDetailActivity.createIntent(context!!, petMasterClickData.viewModel()),
-                ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, *petMasterClickData.transitionViews(), *systemTransitionViews).toBundle())
+                    arrayOf(Pair.create(activity?.findViewById(android.R.id.statusBarBackground), Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME))*/
+        startActivity(PetDetailActivity.createIntent(context!!, petMasterClickData.viewModel())/*,
+                ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, *petMasterClickData.transitionViews(), *systemTransitionViews).toBundle()*/)
     }
 
     override fun showError(error: String) {
